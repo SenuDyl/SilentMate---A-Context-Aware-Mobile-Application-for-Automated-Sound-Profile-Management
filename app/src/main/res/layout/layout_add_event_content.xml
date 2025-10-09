@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Event Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Title"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/eventTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter event title"
+
+        android:background="@drawable/edittext_bg"
+        android:padding="10dp"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Start and End Time -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Time"
+                android:textSize="14dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/startTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="8.15 a.m."
+                android:background="@drawable/edittext_bg"
+                android:padding="10dp"
+                android:focusable="false"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="End Time"
+                android:textSize="14dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/endTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="10.15 a.m."
+                android:background="@drawable/edittext_bg"
+                android:padding="10dp"
+                android:focusable="false"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Date Buttons -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/monButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Mon"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tueButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tue"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/wedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Wed"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/thuButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Thu"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/friButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Fri"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/satButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sat"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sunButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sun"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:checkable="true"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="2dp"
+            app:backgroundTint="@color/day_button_color"/>
+    </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <!-- Recurrence -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recurrence"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp" />
+
+    <RadioGroup
+        android:id="@+id/recurrenceGroup"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
+
+        <RadioButton android:id="@+id/oneTime" android:text="One-time" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <RadioButton android:id="@+id/weekly" android:text="Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <RadioButton android:id="@+id/biWeekly" android:text="Bi-Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/monthly"
+            android:text="Monthly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+    </RadioGroup>
+
+    <!-- Location -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp"/>
+
+    <EditText
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter location"
+        android:background="@drawable/edittext_bg"
+        android:padding="10dp"/>
+
+    <!-- MapView Placeholder -->
+    <ImageView
+        android:id="@+id/mapImage"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/sample_map"
+        android:scaleType="centerCrop"
+        android:background="@drawable/edittext_bg"/>
+
+    <!-- Action Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Action"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="12dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <ImageButton
+            android:id="@+id/soundOff"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/baseline_volume_up_24"
+            android:background="@null"
+            app:tint="@color/purple"
+            android:layout_marginEnd="90dp"/>
+
+        <ImageButton
+            android:id="@+id/vibrate"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/baseline_vibration_24"
+            android:background="@null"
+            app:tint="@color/purple"
+            android:layout_marginEnd="90dp"/>
+
+        <ImageButton
+            android:id="@+id/soundOn"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/baseline_volume_off_24"
+            android:background="@null"
+            app:tint="@color/purple"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DateButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:background">@drawable/date_button_bg</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+
+    <style name="AppFontStyle">
+        <item name="android:fontFamily">@font/noto_sans</item>
+    </style>
+
+    <style name="DateToggle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">8dp</item>
+        <item name="backgroundTint">@color/purple</item>
+<!--        <item name="android:background">@drawable/toggle_button_selector</item>-->
+    </style>
+
+</resources>
