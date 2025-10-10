@@ -99,4 +99,5 @@
         app:labelVisibilityMode="unlabeled"
         app:itemIconSize="32dp"
         app:menu="@menu/bottom_menu"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

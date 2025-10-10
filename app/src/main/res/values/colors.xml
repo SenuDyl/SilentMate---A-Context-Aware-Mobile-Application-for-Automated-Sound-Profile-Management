@@ -7,4 +7,6 @@
     <color name="pink">#F9B0C3</color>
     <color name="yellow">#FFC212</color>
     <color name="green">#4CD964</color>
+    <color name="lightGray">#D3D3D3</color>
+    <color name="gray">#666666</color>
 </resources>

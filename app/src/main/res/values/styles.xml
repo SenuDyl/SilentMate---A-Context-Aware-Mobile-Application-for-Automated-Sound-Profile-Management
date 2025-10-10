@@ -24,4 +24,8 @@
 <!--        <item name="android:background">@drawable/toggle_button_selector</item>-->
     </style>
 
+    <style name="Theme.SilentMate" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Force light mode -->
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
 </resources>
