@@ -57,10 +57,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.addEventFab.setOnClickListener {
-            val intent = Intent(this, AddEventActivity::class.java)
-            startActivity(intent)
-        }
+//        val intent = Intent(this, TestDatabaseActivity::class.java)
+//        startActivity(intent)
+//        finish()
 
         // Disable dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -70,6 +69,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             .replace(R.id.fragmentContainer, fragment)
-            .commit()
+            .commitNow()
     }
 }

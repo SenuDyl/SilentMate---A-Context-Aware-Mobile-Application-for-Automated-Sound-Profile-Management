@@ -87,121 +87,41 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Date Buttons -->
+    <!-- Start Date -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
+        android:text="Start Date"
         android:textStyle="bold"
         android:textSize="14dp"
         android:textColor="@color/black"
-        android:layout_marginTop="12dp" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:layout_marginTop="12dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:background="@drawable/edittext_bg">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/monButton"
+        <TextView
+            android:id="@+id/startDateText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Mon"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
+            android:text="Select a date"
+            android:textSize="16sp"
+             />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tueButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tue"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/wedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Wed"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/thuButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Thu"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/friButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Fri"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/satButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sat"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sunButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sun"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
+        <ImageView
+            android:id="@+id/startDateIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/baseline_calendar_month_24"
+            app:tint="@color/darkPurple" />
     </LinearLayout>
 
-    </HorizontalScrollView>
 
     <!-- Recurrence -->
     <TextView
@@ -240,23 +160,35 @@
         android:textColor="@color/black"
         android:layout_marginTop="12dp"/>
 
-    <EditText
-        android:id="@+id/location"
+<!--    <EditText-->
+<!--        android:id="@+id/location"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Enter location"-->
+<!--        android:background="@drawable/edittext_bg"-->
+<!--        android:padding="10dp"/>-->
+
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter location"
-        android:background="@drawable/edittext_bg"
-        android:padding="10dp"/>
+        android:layout_height="wrap_content" />
+
 
     <!-- MapView Placeholder -->
-    <ImageView
-        android:id="@+id/mapImage"
+<!--    <ImageView-->
+<!--        android:id="@+id/mapImage"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="150dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:src="@drawable/sample_map"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:background="@drawable/edittext_bg"/>-->
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/sample_map"
-        android:scaleType="centerCrop"
-        android:background="@drawable/edittext_bg"/>
+        android:layout_marginTop="8dp" />
 
     <!-- Action Section -->
     <TextView

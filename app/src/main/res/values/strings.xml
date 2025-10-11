@@ -2,4 +2,5 @@
     <string name="app_name">SilentMate</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_map_api_key">AIzaSyBkXtv9e5rPdZNsA2hZLkEjs7RaxEt3nds</string>
 </resources>
