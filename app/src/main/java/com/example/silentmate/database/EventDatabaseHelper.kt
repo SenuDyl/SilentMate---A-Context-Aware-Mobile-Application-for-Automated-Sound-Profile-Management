@@ -2,6 +2,7 @@ package com.example.silentmate.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.silentmate.model.Event
@@ -115,5 +116,37 @@ class EventDatabaseHelper(context: Context):
         )
         return updatedRows > 0
     }
+
+    fun getEventById(eventId: Int): Event? {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_EVENTS,
+            null, // null means all columns
+            "$COLUMN_ID = ?",
+            arrayOf(eventId.toString()),
+            null,
+            null,
+            null
+        )
+
+        var event: Event? = null
+        if (cursor.moveToFirst()) {
+            val locationStr = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCATION))
+            val (displayName, lat, lon) = Converters.stringToLocation(locationStr)
+            event = Event(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
+                date = Converters.stringToLocalDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE))),
+                startTime = Converters.stringToLocalTime(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_START_TIME))),
+                endTime = Converters.stringToLocalTime(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_END_TIME))),
+                recurrence = Converters.stringToRecurrence(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_RECURRENCE))),
+                location = Location(displayName, lat, lon),
+                action = Converters.stringToAction(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ACTION)))
+            )
+        }
+        cursor.close()
+        return event
+    }
+
 
 }
