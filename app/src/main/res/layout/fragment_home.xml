@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="?attr/android:colorBackground">
 
     <!-- Header -->
     <LinearLayout
@@ -57,7 +57,8 @@
             android:fontFamily="@font/noto_sans"
             android:gravity="center"
             android:text="No schedule created yet"
-            android:textColor="@color/gray"
+            android:textColor="?attr/colorOnSurface"
+            android:alpha="0.6"
             android:textSize="16sp" />
 
     </LinearLayout>
