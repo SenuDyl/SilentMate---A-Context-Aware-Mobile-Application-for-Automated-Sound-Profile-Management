@@ -1,11 +1,14 @@
 package com.example.silentmate
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.silentmate.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,6 +66,26 @@ class MainActivity : AppCompatActivity() {
 
         // Disable dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // Show tutorial if it hasn't been seen yet
+        showTutorialIfNeeded()
+    }
+
+    private fun showTutorialIfNeeded() {
+        val prefs = getSharedPreferences("SilentMatePrefs", Context.MODE_PRIVATE)
+        val seen = prefs.getBoolean("tutorial_seen", false)
+        if (!seen) {
+            // Use lifecycleScope to ensure the activity is running
+            lifecycleScope.launch {
+                // Small delay to let the activity fully attach
+                delay(100) // 100ms is usually enough
+                if (!isFinishing && !isDestroyed) {
+                    val tutorialDialog = TutorialDialogFragment()
+                    tutorialDialog.isCancelable = false
+                    tutorialDialog.show(supportFragmentManager, "tutorial_dialog")
+                }
+            }
+        }
     }
 
     private fun replaceFragment(fragment: Fragment) {
