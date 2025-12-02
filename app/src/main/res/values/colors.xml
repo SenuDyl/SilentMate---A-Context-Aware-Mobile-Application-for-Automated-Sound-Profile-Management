@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base App Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="darkPurple">#46467A</color>
@@ -10,4 +11,23 @@
     <color name="lightGray">#D3D3D3</color>
     <color name="gray">#666666</color>
     <color name="blue">#2196F3</color>
+
+    <!-- Switch Colors - Using App's Color Palette -->
+    <color name="switch_thumb_unchecked">@color/purple</color> <!-- Purple for OFF/Right side -->
+    <color name="switch_track_unchecked">#B8A8E6</color> <!-- Light Purple background -->
+    <color name="switch_thumb_checked">@color/pink</color> <!-- Pink for ON/Active state -->
+    <color name="switch_track_checked">#FDE0E9</color> <!-- Light Pink background -->
+
+    <!-- Background Colors -->
+    <color name="background_light">@color/white</color>
+    <color name="background_dark">@color/black</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">@color/black</color>
+    <color name="text_secondary">@color/gray</color>
+
+    <!-- Status Colors -->
+    <color name="status_active">@color/green</color>
+    <color name="status_warning">@color/yellow</color>
+    <color name="status_inactive">@color/lightGray</color>
 </resources>

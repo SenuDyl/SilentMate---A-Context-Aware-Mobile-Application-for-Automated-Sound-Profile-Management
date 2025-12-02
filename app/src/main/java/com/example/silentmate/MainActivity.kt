@@ -3,6 +3,7 @@ package com.example.silentmate
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.silentmate.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,6 +20,16 @@ class MainActivity : AppCompatActivity() {
     private val settingsFragment = SettingsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply saved theme preference BEFORE super.onCreate()
+        val sharedPreferences = getSharedPreferences("SilentMatePrefs", MODE_PRIVATE)
+        val isDarkMode = sharedPreferences.getBoolean("dark_mode", false)
+
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -30,15 +41,18 @@ class MainActivity : AppCompatActivity() {
             "sensor" -> {
                 replaceFragment(sensorFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_sensor
+                binding.addEventFab.show()
             }
             "settings" -> {
                 replaceFragment(settingsFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_settings
+                binding.addEventFab.hide()
             }
             else -> {
                 // Show home fragment by default
                 replaceFragment(homeFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_home
+                binding.addEventFab.show()
             }
         }
 
@@ -46,14 +60,17 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> {
                     replaceFragment(homeFragment)
+                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_sensor -> {
                     replaceFragment(sensorFragment)
+                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_settings -> {
                     replaceFragment(settingsFragment)
+                    binding.addEventFab.hide()
                     true
                 }
                 else -> false
@@ -85,6 +102,10 @@ class MainActivity : AppCompatActivity() {
                     tutorialDialog.show(supportFragmentManager, "tutorial_dialog")
                 }
             }
+        }
+        binding.addEventFab.setOnClickListener {
+            val intent = Intent(this, AddEventActivity::class.java)
+            startActivity(intent)
         }
     }
 
