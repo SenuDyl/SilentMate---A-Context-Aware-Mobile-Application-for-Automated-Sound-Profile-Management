@@ -15,6 +15,9 @@ coordinatorlayout = "1.2.0"
 playServicesLocation = "21.3.0"
 playServicesMaps = "18.1.0"
 places = "3.2.0"
+androidx_work = "2.8.1"
+kotlinx_coroutines = "1.7.3"
+kotlinx_coroutines_play_services = "1.7.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +34,9 @@ androidx-coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coo
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 google-places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+androidx_work_runtimeKtx = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx_work" }
+kotlinx_coroutines_android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx_coroutines" }
+kotlinx_coroutines_play_services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx_coroutines_play_services" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -61,4 +61,8 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.google.places)
 
+    implementation(libs.androidx.work.runtimeKtx) // WorkManager
+    implementation(libs.kotlinx.coroutines.android) // Kotlin coroutines (for Worker)
+    implementation(libs.kotlinx.coroutines.play.services)
+
 }
