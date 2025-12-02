@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
+import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioButton
@@ -17,6 +18,7 @@ import com.example.silentmate.model.Action
 import com.example.silentmate.model.Event
 import com.example.silentmate.model.Location
 import com.example.silentmate.model.Recurrence
+import com.example.silentmate.worker.WorkManagerScheduler
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -27,7 +29,10 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -37,11 +42,11 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var titleEditText: EditText
     private lateinit var startTimeEditText: EditText
     private lateinit var endTimeEditText: EditText
-    private lateinit var recurrenceGroup: RadioGroup
-    private lateinit var oneTimeRadio: RadioButton
-    private lateinit var weeklyRadio: RadioButton
-    private lateinit var biWeeklyRadio: RadioButton
-    private lateinit var monthlyRadio: RadioButton
+    private lateinit var recurrenceGroup: GridLayout
+    private lateinit var oneTimeButton: RadioButton
+    private lateinit var weeklyButton: RadioButton
+    private lateinit var biWeeklyButton: RadioButton
+    private lateinit var monthlyButton: RadioButton
     private lateinit var doneButton: ImageView
     private lateinit var cancelButton: ImageView
     private lateinit var backButton: ImageView
@@ -86,6 +91,7 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
         setupTimePickers()
         setupRecurrenceRadioGroup()
         setupActionButtons()
+        setInitialTimeDisplay()
 
         mapView = findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
@@ -107,10 +113,6 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
         startDateText = findViewById(R.id.startDateText)
 
         recurrenceGroup = findViewById(R.id.recurrenceGroup)
-        oneTimeRadio = findViewById(R.id.oneTime)
-        weeklyRadio = findViewById(R.id.weekly)
-        biWeeklyRadio = findViewById(R.id.biWeekly)
-        monthlyRadio = findViewById(R.id.monthly)
 
         doneButton = findViewById(R.id.doneIcon)
         cancelButton = findViewById(R.id.closeIcon)
@@ -173,16 +175,31 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun pickTime(isStart: Boolean) {
         val now = Calendar.getInstance()
-        TimePickerDialog(this, { _, hour, minute ->
+        TimePickerDialog(
+            this,
+            R.style.CustomTimePicker,
+            { _, hour, minute ->
             val time = LocalTime.of(hour, minute)
+            val formatter = DateTimeFormatter.ofPattern("hh:mm a") // 12-hour format with AM/PM
+            val formattedTime = time.format(formatter)
             if (isStart) {
                 startTime = time
-                startTimeEditText.setText(time.toString())
+                startTimeEditText.setText(formattedTime)
             } else {
                 endTime = time
-                endTimeEditText.setText(time.toString())
+                endTimeEditText.setText(formattedTime)
             }
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
+    }
+
+    private fun setInitialTimeDisplay() {
+        val formatter = DateTimeFormatter.ofPattern("hh:mm a") // 12-hour format with AM/PM
+        startTime?.let {
+            startTimeEditText.setText(it.format(formatter))
+        }
+        endTime?.let {
+            endTimeEditText.setText(it.format(formatter))
+        }
     }
 
     private fun setupDatePicker() {
@@ -193,7 +210,10 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-            val datePicker = android.app.DatePickerDialog(this, { _, y, m, d ->
+            val datePicker = android.app.DatePickerDialog(
+                this,
+                R.style.CustomTimePicker,
+                { _, y, m, d ->
                 selectedDate = LocalDate.of(y, m + 1, d) // Month is 0-indexed
                 startDateText.text = selectedDate.toString()
             }, year, month, day)
@@ -209,14 +229,29 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private fun setupRecurrenceRadioGroup() {
-        recurrenceGroup.setOnCheckedChangeListener { _, checkedId ->
-            recurrence = when (checkedId) {
-                R.id.oneTime -> Recurrence.ONCE
-                R.id.weekly -> Recurrence.WEEKLY
-                R.id.biWeekly -> Recurrence.BIWEEKLY
-                R.id.monthly -> Recurrence.MONTHLY
-                else -> Recurrence.ONCE
-            }
+        recurrenceGroup = findViewById(R.id.recurrenceGroup)
+
+        // Find the individual RadioButton views by their ID
+        oneTimeButton = findViewById(R.id.oneTime)
+        weeklyButton = findViewById(R.id.weekly)
+        biWeeklyButton = findViewById(R.id.biWeekly)
+        monthlyButton = findViewById(R.id.monthly)
+
+        // Set the listener for each RadioButton
+        oneTimeButton.setOnClickListener {
+            recurrence = Recurrence.ONCE
+        }
+
+        weeklyButton.setOnClickListener {
+            recurrence = Recurrence.WEEKLY
+        }
+
+        biWeeklyButton.setOnClickListener {
+            recurrence = Recurrence.BIWEEKLY
+        }
+
+        monthlyButton.setOnClickListener {
+            recurrence = Recurrence.MONTHLY
         }
     }
 
@@ -245,10 +280,10 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
             startDateText.text = event.date.toString()
             recurrence = event.recurrence
             when (recurrence) {
-                Recurrence.ONCE -> oneTimeRadio.isChecked = true
-                Recurrence.WEEKLY -> weeklyRadio.isChecked = true
-                Recurrence.BIWEEKLY -> biWeeklyRadio.isChecked = true
-                Recurrence.MONTHLY -> monthlyRadio.isChecked = true
+                Recurrence.ONCE -> oneTimeButton.isChecked = true
+                Recurrence.WEEKLY -> weeklyButton.isChecked = true
+                Recurrence.BIWEEKLY -> biWeeklyButton.isChecked = true
+                Recurrence.MONTHLY -> monthlyButton.isChecked = true
             }
             action = event.action
             location = event.location
@@ -291,6 +326,15 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
         val success = dbHelper.updateEvent(updatedEvent)
         if (success) {
             Toast.makeText(this, "Event updated!", Toast.LENGTH_SHORT).show()
+            val eventStartTime = LocalDateTime.of(selectedDate, startTime!!) // Combine date and time
+            val eventStartTimeMillis = eventStartTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+            // Calculate the event start time in milliseconds
+            val eventEndTime = LocalDateTime.of(selectedDate, endTime!!) // Combine date and time
+            val eventEndTimeMillis = eventEndTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+            // After DB insert (get returned id)
+            WorkManagerScheduler.scheduleEvent(applicationContext, eventId.toLong(), eventStartTimeMillis, eventEndTimeMillis)
             finish()
         } else {
             Toast.makeText(this, "Failed to update event", Toast.LENGTH_SHORT).show()

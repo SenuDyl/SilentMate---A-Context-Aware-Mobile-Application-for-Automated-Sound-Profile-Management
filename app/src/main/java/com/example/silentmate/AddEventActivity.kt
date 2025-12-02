@@ -2,27 +2,23 @@ package com.example.silentmate
 
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import android.Manifest
-import android.app.Activity
 import android.util.Log
+import android.widget.GridLayout
 import android.widget.TextView
-import android.location.Location as AndroidLocation
 import com.example.silentmate.database.EventDatabaseHelper
+import com.example.silentmate.geofence.GeofenceManager
 import com.example.silentmate.model.Action
 import com.example.silentmate.model.Event
 import com.example.silentmate.model.Location
 import com.example.silentmate.model.Recurrence
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.silentmate.worker.WorkManagerScheduler
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,17 +27,14 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.button.MaterialButton
-import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -59,11 +52,11 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var titleEditText: EditText
     private lateinit var startTimeEditText: EditText
     private lateinit var endTimeEditText: EditText
-    private lateinit var recurrenceGroup: RadioGroup
-    private lateinit var oneTimeRadio: RadioButton
-    private lateinit var weeklyRadio: RadioButton
-    private lateinit var biWeeklyRadio: RadioButton
-    private lateinit var monthlyRadio: RadioButton
+    private lateinit var recurrenceGroup: GridLayout
+    private lateinit var oneTimeButton: RadioButton
+    private lateinit var weeklyButton: RadioButton
+    private lateinit var biWeeklyButton: RadioButton
+    private lateinit var monthlyButton: RadioButton
     private lateinit var doneButton: ImageView
     private lateinit var cancelButton: ImageView
     private lateinit var backButton: ImageView
@@ -90,10 +83,8 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_event)
 
-        // Initialize Places API
-        if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, getString(R.string.my_map_api_key))
-        }
+//        val apiKey = ""
+//        Places.initialize(applicationContext, apiKey)
 
         val autocompleteFragment = supportFragmentManager
             .findFragmentById(R.id.place_autocomplete_fragment) as AutocompleteSupportFragment
@@ -190,12 +181,6 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
         startDateText = findViewById(R.id.startDateText)
         startDateIcon = findViewById(R.id.startDateIcon)
 
-        recurrenceGroup = findViewById(R.id.recurrenceGroup)
-        oneTimeRadio = findViewById(R.id.oneTime)
-        weeklyRadio = findViewById(R.id.weekly)
-        biWeeklyRadio = findViewById(R.id.biWeekly)
-        monthlyRadio = findViewById(R.id.monthly)
-
         doneButton = findViewById(R.id.doneIcon)
         cancelButton = findViewById(R.id.closeIcon)
         backButton = findViewById(R.id.backIcon)
@@ -212,14 +197,21 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun pickTime(isStart: Boolean) {
         val now = Calendar.getInstance()
-        TimePickerDialog(this, { _, hour, minute ->
+        TimePickerDialog(
+            this,
+            R.style.CustomTimePicker,
+            { _, hour, minute ->
             val time = LocalTime.of(hour, minute)
+            // Format the time as 12-hour format with AM/PM
+            val formatter = DateTimeFormatter.ofPattern("hh:mm a") // 12-hour format with AM/PM
+            val formattedTime = time.format(formatter)
+
             if (isStart) {
                 startTime = time
-                startTimeEditText.setText(time.toString())
+                startTimeEditText.setText(formattedTime)
             } else {
                 endTime = time
-                endTimeEditText.setText(time.toString())
+                endTimeEditText.setText(formattedTime)
             }
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
     }
@@ -232,7 +224,10 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-            val datePicker = android.app.DatePickerDialog(this, { _, y, m, d ->
+            val datePicker = android.app.DatePickerDialog(
+                this,
+                R.style.CustomTimePicker,
+                { _, y, m, d ->
                 selectedDate = LocalDate.of(y, m + 1, d) // Month is 0-indexed
                 startDateText.text = selectedDate.toString()
             }, year, month, day)
@@ -244,16 +239,30 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
         startDateIcon.setOnClickListener { pickDate() }
     }
 
-
     private fun setupRecurrenceRadioGroup() {
-        recurrenceGroup.setOnCheckedChangeListener { _, checkedId ->
-            recurrence = when (checkedId) {
-                R.id.oneTime -> Recurrence.ONCE
-                R.id.weekly -> Recurrence.WEEKLY
-                R.id.biWeekly -> Recurrence.BIWEEKLY
-                R.id.monthly -> Recurrence.MONTHLY
-                else -> Recurrence.ONCE
-            }
+        recurrenceGroup = findViewById(R.id.recurrenceGroup)
+
+        // Find the individual RadioButton views by their ID
+        oneTimeButton = findViewById(R.id.oneTime)
+        weeklyButton = findViewById(R.id.weekly)
+        biWeeklyButton = findViewById(R.id.biWeekly)
+        monthlyButton = findViewById(R.id.monthly)
+
+        // Set the listener for each RadioButton
+        oneTimeButton.setOnClickListener {
+            recurrence = Recurrence.ONCE
+        }
+
+        weeklyButton.setOnClickListener {
+            recurrence = Recurrence.WEEKLY
+        }
+
+        biWeeklyButton.setOnClickListener {
+            recurrence = Recurrence.BIWEEKLY
+        }
+
+        monthlyButton.setOnClickListener {
+            recurrence = Recurrence.MONTHLY
         }
     }
 
@@ -288,6 +297,16 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
         )
 
         val id = dbHelper.insertEvent(event).toInt()
+        // Calculate the event start time in milliseconds
+        val eventStartTime = LocalDateTime.of(selectedDate, startTime!!) // Combine date and time
+        val eventStartTimeMillis = eventStartTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        // Calculate the event start time in milliseconds
+        val eventEndTime = LocalDateTime.of(selectedDate, endTime!!) // Combine date and time
+        val eventEndTimeMillis = eventEndTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+        // After DB insert (get returned id)
+        WorkManagerScheduler.scheduleEvent(applicationContext, id.toLong(), eventStartTimeMillis, eventEndTimeMillis)
         createGeofence(event.copy(id = id))
         Toast.makeText(this, "Event saved!", Toast.LENGTH_SHORT).show()
         finish()
@@ -298,7 +317,7 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun createGeofence(event: Event) {
-        GeofenceHelper.addGeofence(this, geofencingClient, event)
+        GeofenceManager(applicationContext).registerGeofence(event)
     }
 
     override fun onResume() { super.onResume(); mapView.onResume() }
