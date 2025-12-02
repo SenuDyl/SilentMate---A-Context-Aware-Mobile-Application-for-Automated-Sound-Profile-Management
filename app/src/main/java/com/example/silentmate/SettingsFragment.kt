@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,6 +32,7 @@ class SettingsFragment : Fragment() {
     private lateinit var dndOverrideSwitch: SwitchCompat
     private lateinit var sensorAccessSwitch: SwitchCompat
     private lateinit var performanceModeSwitch: SwitchCompat
+    private lateinit var darkModeSwitch: SwitchCompat
 
     // Permission launchers
     private val locationPermissionLauncher = registerForActivityResult(
@@ -72,6 +74,7 @@ class SettingsFragment : Fragment() {
         dndOverrideSwitch = view.findViewById(R.id.dndOverrideSwitch)
         sensorAccessSwitch = view.findViewById(R.id.sensorAccessSwitch)
         performanceModeSwitch = view.findViewById(R.id.performanceModeSwitch)
+        darkModeSwitch = view.findViewById(R.id.darkModeSwitch)
 
         // Apply purple color to all switches
         applySwitchColors()
@@ -121,6 +124,7 @@ class SettingsFragment : Fragment() {
         applySwitchColorStateList(dndOverrideSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(sensorAccessSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(performanceModeSwitch, thumbColorStateList, trackColorStateList)
+        applySwitchColorStateList(darkModeSwitch, thumbColorStateList, trackColorStateList)
     }
 
     private fun applySwitchColorStateList(
@@ -171,6 +175,9 @@ class SettingsFragment : Fragment() {
 
         // Performance mode from preferences
         performanceModeSwitch.isChecked = sharedPreferences.getBoolean("performance_mode", false)
+
+        // Dark mode from preferences
+        darkModeSwitch.isChecked = sharedPreferences.getBoolean("dark_mode", false)
     }
 
     private fun setupSwitchListeners() {
@@ -227,6 +234,22 @@ class SettingsFragment : Fragment() {
 
             Toast.makeText(requireContext(), "$mode: $description", Toast.LENGTH_LONG).show()
             Log.d("SettingsFragment", "Performance mode changed: $mode - $description")
+        }
+
+        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            // Prevent listener from firing during load
+            if (darkModeSwitch.isPressed || !isAdded) {
+                sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+
+                // Apply dark mode immediately
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    Toast.makeText(requireContext(), "Dark mode enabled", Toast.LENGTH_SHORT).show()
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    Toast.makeText(requireContext(), "Light mode enabled", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
