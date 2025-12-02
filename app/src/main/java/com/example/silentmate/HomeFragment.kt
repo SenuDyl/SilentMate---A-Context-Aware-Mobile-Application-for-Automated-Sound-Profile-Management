@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.silentmate.adapter.EventAdapter
+import com.example.silentmate.geofence.GeofenceManager
 import com.example.silentmate.model.Event
+import com.example.silentmate.worker.WorkManagerScheduler
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -60,6 +62,10 @@ class HomeFragment : Fragment() {
                         if (success) {
                             eventsList.remove(event)
                             adapter.notifyDataSetChanged()
+                            WorkManagerScheduler.cancelEvent(requireContext(), event.id.toLong())
+                            // Also remove any geofence
+                            GeofenceManager(requireContext()).removeGeofence(event.id.toLong())
+
                             updateUI()
                         } else {
                             Toast.makeText(requireContext(), "Failed to delete event", Toast.LENGTH_SHORT).show()
