@@ -55,6 +55,7 @@
                 android:hint="8.15 a.m."
                 android:background="@drawable/edittext_bg"
                 android:padding="10dp"
+                android:layout_marginTop="4dp"
                 android:focusable="false"/>
         </LinearLayout>
 
@@ -83,6 +84,7 @@
                 android:hint="10.15 a.m."
                 android:background="@drawable/edittext_bg"
                 android:padding="10dp"
+                android:layout_marginTop="4dp"
                 android:focusable="false"/>
         </LinearLayout>
     </LinearLayout>
@@ -103,6 +105,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="8dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/edittext_bg">
 
         <TextView
@@ -111,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Select a date"
+            android:textColor="@color/black"
             android:textSize="16sp"
              />
 
@@ -133,22 +137,120 @@
         android:textColor="@color/black"
         android:layout_marginTop="12dp" />
 
-    <RadioGroup
+<!--    <RadioGroup-->
+<!--        android:id="@+id/recurrenceGroup"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="4dp"-->
+<!--        android:gravity="center_vertical">-->
+
+<!--    <RadioButton-->
+<!--        android:id="@+id/oneTime"-->
+<!--        android:text="One-time"-->
+<!--        android:buttonTint="@color/radio_color"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:singleLine="true" />-->
+
+<!--    <RadioButton-->
+<!--        android:id="@+id/weekly"-->
+<!--        android:text="Weekly"-->
+<!--        android:buttonTint="@color/radio_color"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:singleLine="true" />-->
+
+<!--    <RadioButton-->
+<!--        android:id="@+id/biWeekly"-->
+<!--        android:text="Bi-Weekly"-->
+<!--        android:buttonTint="@color/radio_color"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:singleLine="true" />-->
+
+<!--    <RadioButton-->
+<!--        android:id="@+id/monthly"-->
+<!--        android:text="Monthly"-->
+<!--        android:buttonTint="@color/radio_color"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:paddingStart="8dp"-->
+<!--        android:paddingEnd="8dp"-->
+<!--        android:singleLine="true" />-->
+<!--    </RadioGroup>-->
+
+    <GridLayout
         android:id="@+id/recurrenceGroup"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:rowCount="2">
 
-        <RadioButton android:id="@+id/oneTime" android:text="One-time" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <RadioButton android:id="@+id/weekly" android:text="Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <RadioButton android:id="@+id/biWeekly" android:text="Bi-Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <!-- RadioGroup to group all radio buttons together (mutually exclusive) -->
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/monthly"
-            android:text="Monthly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-    </RadioGroup>
+            <!-- RadioButton for "One-time" -->
+            <RadioButton
+                android:id="@+id/oneTime"
+                android:text="Once"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Weekly" -->
+            <RadioButton
+                android:id="@+id/weekly"
+                android:text="Weekly"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Bi-Weekly" -->
+            <RadioButton
+                android:id="@+id/biWeekly"
+                android:text="Bi-Weekly"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Monthly" -->
+            <RadioButton
+                android:id="@+id/monthly"
+                android:text="Monthly"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:singleLine="true" />
+        </RadioGroup>
+
+    </GridLayout>
 
     <!-- Location -->
     <TextView
@@ -160,30 +262,12 @@
         android:textColor="@color/black"
         android:layout_marginTop="12dp"/>
 
-<!--    <EditText-->
-<!--        android:id="@+id/location"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:hint="Enter location"-->
-<!--        android:background="@drawable/edittext_bg"-->
-<!--        android:padding="10dp"/>-->
-
     <fragment
         android:id="@+id/place_autocomplete_fragment"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-    <!-- MapView Placeholder -->
-<!--    <ImageView-->
-<!--        android:id="@+id/mapImage"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="150dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:src="@drawable/sample_map"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:background="@drawable/edittext_bg"/>-->
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -209,28 +293,28 @@
 
         <ImageButton
             android:id="@+id/soundOff"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_volume_up_24"
-            android:background="@null"
-            app:tint="@color/purple"
-            android:layout_marginEnd="90dp"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/vibrate"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_vibration_24"
-            android:background="@null"
-            app:tint="@color/purple"
-            android:layout_marginEnd="90dp"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/soundOn"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_volume_off_24"
-            android:background="@null"
-            app:tint="@color/purple"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"/>
     </LinearLayout>
 </LinearLayout>

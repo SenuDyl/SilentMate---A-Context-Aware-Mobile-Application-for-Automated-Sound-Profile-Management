@@ -28,4 +28,23 @@
         <!-- Force light mode -->
         <item name="android:forceDarkAllowed">false</item>
     </style>
+
+    <style name="CustomTimePicker" parent="ThemeOverlay.AppCompat.Dialog">
+        <!-- Dialog background -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- Accent color (OK/Cancel buttons, toggles) -->
+        <item name="colorAccent">@color/purple</item>
+
+        <!-- Text color inside spinner/clock -->
+        <item name="android:textColorPrimary">@color/gray</item>
+
+        <!-- OK/Cancel button style -->
+        <item name="android:buttonStyle">@style/TimePickerButtonStyle</item>
+    </style>
+
+    <style name="TimePickerButtonStyle" parent="@android:style/Widget.Material.Button.Borderless.Colored">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 </resources>
