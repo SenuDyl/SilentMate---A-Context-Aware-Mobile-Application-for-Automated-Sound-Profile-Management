@@ -1,16 +1,23 @@
 package com.example.silentmate
 
-import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.AudioManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import kotlin.math.sqrt
 
 enum class DevicePosition {
     UPSIDE_DOWN,
@@ -29,76 +36,132 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val sharedPreferences = context.getSharedPreferences("SilentMatePrefs", Context.MODE_PRIVATE)
-    
+
     private var accelerometer: Sensor? = null
     private var gyroscope: Sensor? = null
     private var proximity: Sensor? = null
-    
+
     private var currentPosition = DevicePosition.UNKNOWN
     private var currentAudioProfile = AudioProfile.GENERAL
-    
+
     private val handler = Handler(Looper.getMainLooper())
     private var positionUpdateCallback: ((DevicePosition, AudioProfile) -> Unit)? = null
-    
-    // Performance mode variables
+
+    private val featureEnabled = mutableMapOf(
+        DevicePosition.UPSIDE_DOWN to true,
+        DevicePosition.IN_POCKET to true,
+        DevicePosition.IN_HAND to true
+    )
+
     private var isPerformanceMode = false
     private var lastSensorCheckTime = 0L
-    private var sensorCheckInterval = 1000L // 1 second in normal mode
-    private var performanceModeInterval = 5000L // 5 seconds in performance mode
-    
-    // Battery optimization
+    private var sensorCheckInterval = 500L
+    private var performanceModeInterval = 2000L
+
     private var lastPositionChangeTime = 0L
-    private var positionStableTime = 30000L // 30 seconds of stability before reducing checks
-    
-    // Sensor data
+    private var positionStableTime = 5000L
+
     private var lastAccelerometerData = floatArrayOf(0f, 0f, 0f)
     private var lastGyroscopeData = floatArrayOf(0f, 0f, 0f)
-    private var isNearProximity = false
-    
-    // Thresholds
-    private val UPSIDE_DOWN_THRESHOLD = -8f // Z-axis acceleration when upside down
-    private val MOVEMENT_THRESHOLD = 0.5f // Gyroscope movement threshold
-    private val STABLE_THRESHOLD = 0.1f // Stability threshold for position detection
+    private var proximityDistance = 100f
+
+    private val UPSIDE_DOWN_THRESHOLD = -5f
+    private val IN_HAND_MOVEMENT_THRESHOLD = 0.5f
+    private val STABLE_THRESHOLD = 0.5f
+    private val PROXIMITY_NEAR_THRESHOLD = 5f // Increased to 5cm for better detection
+    private val DESK_STABLE_THRESHOLD = 0.1f
+
+    companion object {
+        private const val CHANNEL_ID = "SilentMateChannelV2"
+        private const val NOTIFICATION_ID = 1001
+    }
 
     init {
         initializeSensors()
+        createNotificationChannel()
     }
 
     private fun initializeSensors() {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
-        
-        Log.d("SensorManager", "Sensors initialized - Accelerometer: ${accelerometer != null}, Gyroscope: ${gyroscope != null}, Proximity: ${proximity != null}")
+
+        Log.d("SensorManager", "Sensors initialized - Accel: ${accelerometer != null}, Gyro: ${gyroscope != null}, Proximity: ${proximity != null}")
+
+        // Log proximity sensor details
+        proximity?.let {
+            Log.d("SensorManager", "Proximity Sensor Info:")
+            Log.d("SensorManager", "  Name: ${it.name}")
+            Log.d("SensorManager", "  Vendor: ${it.vendor}")
+            Log.d("SensorManager", "  Max Range: ${it.maximumRange}cm")
+            Log.d("SensorManager", "  Resolution: ${it.resolution}cm")
+            Log.d("SensorManager", "  Power: ${it.power}mA")
+        } ?: run {
+            Log.e("SensorManager", "⚠️ PROXIMITY SENSOR NOT FOUND! In-pocket detection will not work.")
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                notificationManager.deleteNotificationChannel("SilentMateChannel")
+            } catch (e: Exception) {
+                Log.e("SensorManager", "Error deleting old channel", e)
+            }
+
+            val name = "Silent Mate Status"
+            val descriptionText = "Notifications for device position and audio profile changes"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 500, 200, 500)
+                enableLights(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+                setSound(
+                    android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
+                    android.media.AudioAttributes.Builder()
+                        .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .build()
+                )
+                setBypassDnd(false)
+            }
+            notificationManager.createNotificationChannel(channel)
+            Log.d("SensorManager", "Notification channel created: $CHANNEL_ID")
+        }
     }
 
     fun startListening(callback: (DevicePosition, AudioProfile) -> Unit) {
         positionUpdateCallback = callback
         isPerformanceMode = sharedPreferences.getBoolean("performance_mode", false)
-        
-        // Set sensor delay based on performance mode
+
         val sensorDelay = if (isPerformanceMode) {
-            SensorManager.SENSOR_DELAY_UI // Slower updates for battery saving
+            SensorManager.SENSOR_DELAY_UI
         } else {
             SensorManager.SENSOR_DELAY_NORMAL
         }
-        
-        // Register sensor listeners with appropriate delay
-        accelerometer?.let { 
+
+        accelerometer?.let {
             sensorManager.registerListener(this, it, sensorDelay)
         }
-        gyroscope?.let { 
+        gyroscope?.let {
             sensorManager.registerListener(this, it, sensorDelay)
         }
-        proximity?.let { 
+        proximity?.let {
             sensorManager.registerListener(this, it, sensorDelay)
         }
-        
+
         lastSensorCheckTime = System.currentTimeMillis()
         lastPositionChangeTime = System.currentTimeMillis()
-        
+
         Log.d("SensorManager", "Started listening to sensors - Performance mode: $isPerformanceMode")
+
+        handler.postDelayed({
+            detectAndUpdatePosition()
+        }, 1000)
     }
 
     fun stopListening() {
@@ -109,63 +172,191 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            val currentTime = System.currentTimeMillis()
-            
-            // Performance mode throttling - only process sensor data at intervals
-            if (isPerformanceMode) {
-                val timeSinceLastCheck = currentTime - lastSensorCheckTime
-                val currentInterval = if (isPositionStable()) {
-                    performanceModeInterval * 2 // Even slower when position is stable
-                } else {
-                    performanceModeInterval
-                }
-                
-                if (timeSinceLastCheck < currentInterval) {
-                    return // Skip this sensor update for battery saving
-                }
-                lastSensorCheckTime = currentTime
-            }
-            
             when (it.sensor.type) {
                 Sensor.TYPE_ACCELEROMETER -> {
                     lastAccelerometerData = it.values.clone()
+                    Log.d("SensorManager", "Accel: X=${it.values[0]}, Y=${it.values[1]}, Z=${it.values[2]}")
                 }
                 Sensor.TYPE_GYROSCOPE -> {
                     lastGyroscopeData = it.values.clone()
                 }
                 Sensor.TYPE_PROXIMITY -> {
-                    isNearProximity = it.values[0] < it.sensor.maximumRange
+                    proximityDistance = it.values[0]
+                    val maxRange = it.sensor.maximumRange
+                    Log.d("SensorManager", "⚠️ PROXIMITY UPDATE: ${proximityDistance}cm (max: ${maxRange}cm) - Sensor: ${it.sensor.name}")
+
+                    // Immediately check if this triggers pocket detection
+                    if (proximityDistance < PROXIMITY_NEAR_THRESHOLD) {
+                        Log.d("SensorManager", "🔍 Proximity close enough for pocket detection!")
+                    }
                 }
             }
-            
-            // Update position detection after collecting sensor data
-            updateDevicePosition()
+
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastSensorCheckTime > sensorCheckInterval) {
+                lastSensorCheckTime = currentTime
+                detectAndUpdatePosition()
+            }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Handle accuracy changes if needed
+        Log.d("SensorManager", "Sensor accuracy changed: ${sensor?.name} = $accuracy")
     }
 
-    private fun updateDevicePosition() {
+    private fun detectAndUpdatePosition() {
         val newPosition = detectDevicePosition()
-        
+
+        Log.d("SensorManager", "Detected Position: $newPosition (Current: $currentPosition)")
+
         if (newPosition != currentPosition) {
             currentPosition = newPosition
             lastPositionChangeTime = System.currentTimeMillis()
             val newAudioProfile = mapPositionToAudioProfile(newPosition)
-            
+
             if (newAudioProfile != currentAudioProfile) {
                 currentAudioProfile = newAudioProfile
                 applyAudioProfile(newAudioProfile)
+                sendStatusChangeNotification(newPosition, newAudioProfile)
             }
-            
-            // Notify callback on main thread
+
             handler.post {
                 positionUpdateCallback?.invoke(currentPosition, currentAudioProfile)
             }
-            
+
             Log.d("SensorManager", "Position changed: $currentPosition -> $currentAudioProfile")
+        }
+    }
+
+    private fun detectDevicePosition(): DevicePosition {
+        val x = lastAccelerometerData[0]
+        val y = lastAccelerometerData[1]
+        val z = lastAccelerometerData[2]
+        val movement = getMovementMagnitude()
+
+        Log.d("SensorManager", "Detection - Accel(X:$x, Y:$y, Z:$z), Proximity:$proximityDistance, Movement:$movement")
+
+        // Priority 1: Check proximity sensor (in pocket) - This triggers VIBRATION mode
+        if (featureEnabled[DevicePosition.IN_POCKET] == true) {
+            // Method 1: Check proximity sensor
+            if (proximityDistance < PROXIMITY_NEAR_THRESHOLD) {
+                Log.d("SensorManager", "✓ Detected: IN_POCKET via proximity (${proximityDistance}cm < $PROXIMITY_NEAR_THRESHOLD)")
+                return DevicePosition.IN_POCKET
+            }
+
+            // Method 2: FALLBACK - Check if phone is face down (screen facing down)
+            // When face down, Z-axis should be negative (between -5 and -12)
+            if (z < -3f && z > -12f) {
+                Log.d("SensorManager", "✓ Detected: IN_POCKET via face-down position (Z=$z)")
+                return DevicePosition.IN_POCKET
+            }
+        }
+
+        // Priority 2: Check if actively being used (IN_HAND with movement) - GENERAL mode
+        if (featureEnabled[DevicePosition.IN_HAND] == true) {
+            // Phone is face up (normal position) - Z between 5 and 12
+            if (z > 5f && z < 12f) {
+                if (movement > IN_HAND_MOVEMENT_THRESHOLD) {
+                    Log.d("SensorManager", "✓ Detected: IN_HAND (active use, movement=$movement)")
+                    return DevicePosition.IN_HAND
+                } else if (movement > 0.05f) {
+                    Log.d("SensorManager", "✓ Detected: IN_HAND (holding, movement=$movement)")
+                    return DevicePosition.IN_HAND
+                }
+            }
+        }
+
+        // Priority 3: Everything else (on desk, stable position) = SILENT mode
+        Log.d("SensorManager", "Detected: UNKNOWN (on desk - stable position)")
+        return DevicePosition.UNKNOWN
+    }
+
+    private fun sendStatusChangeNotification(position: DevicePosition, profile: AudioProfile) {
+        if (!sharedPreferences.getBoolean("notifications_enabled", true)) {
+            return
+        }
+
+        val positionText = when (position) {
+            DevicePosition.UPSIDE_DOWN -> "Upside Down"
+            DevicePosition.IN_POCKET -> "In Pocket"
+            DevicePosition.IN_HAND -> "In Hand"
+            DevicePosition.UNKNOWN -> "On Desk"
+        }
+
+        val profileText = when (profile) {
+            AudioProfile.SILENT -> "Silent Mode"
+            AudioProfile.VIBRATION -> "Vibration Mode"
+            AudioProfile.GENERAL -> "General Mode"
+        }
+
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle("Silent Mate Status Changed")
+            .setContentText("Position: $positionText | Profile: $profileText")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        when (position) {
+            DevicePosition.IN_HAND -> {
+                val defaultSoundUri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION)
+
+                notificationBuilder
+                    .setCategory(NotificationCompat.CATEGORY_STATUS)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setSound(defaultSoundUri, android.media.AudioManager.STREAM_NOTIFICATION)
+                    .setVibrate(longArrayOf(0, 300, 200, 300))
+                    .setOnlyAlertOnce(false)
+
+                Log.d("SensorManager", "IN_HAND notification: Sound + Vibration (General Mode) - URI: $defaultSoundUri")
+
+                try {
+                    val ringtone = android.media.RingtoneManager.getRingtone(context, defaultSoundUri)
+                    ringtone?.play()
+                } catch (e: Exception) {
+                    Log.e("SensorManager", "Error playing ringtone", e)
+                }
+            }
+            DevicePosition.IN_POCKET -> {
+                notificationBuilder
+                    .setCategory(NotificationCompat.CATEGORY_STATUS)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                    .setVibrate(longArrayOf(0, 800, 300, 800))
+                    .setSound(null)
+                    .setOnlyAlertOnce(false)
+
+                Log.d("SensorManager", "IN_POCKET notification: Vibration only (Vibration Mode)")
+            }
+            DevicePosition.UPSIDE_DOWN, DevicePosition.UNKNOWN -> {
+                notificationBuilder
+                    .setCategory(NotificationCompat.CATEGORY_STATUS)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setDefaults(0)
+                    .setVibrate(longArrayOf(0))
+                    .setSound(null)
+                    .setOnlyAlertOnce(true)
+
+                Log.d("SensorManager", "ON_DESK notification: Silent (Silent Mode)")
+            }
+        }
+
+        val notification = notificationBuilder.build()
+
+        try {
+            NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+        } catch (e: SecurityException) {
+            Log.e("SensorManager", "Notification permission not granted", e)
         }
     }
 
@@ -174,45 +365,22 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
         return timeSinceLastChange > positionStableTime
     }
 
-    private fun detectDevicePosition(): DevicePosition {
-        // Check if proximity sensor indicates pocket/bag
-        if (isNearProximity) {
-            return DevicePosition.IN_POCKET
-        }
-        
-        // Check if device is upside down (negative Z acceleration)
-        if (lastAccelerometerData[2] < UPSIDE_DOWN_THRESHOLD) {
-            // Check if device is stable (not moving much)
-            val isStable = isDeviceStable()
-            if (isStable) {
-                return DevicePosition.UPSIDE_DOWN
-            }
-        }
-        
-        // Check if device is being actively used (movement detected)
-        if (isDeviceMoving()) {
-            return DevicePosition.IN_HAND
-        }
-        
-        return DevicePosition.UNKNOWN
-    }
-
     private fun isDeviceStable(): Boolean {
-        val gyroMagnitude = kotlin.math.sqrt(
-            lastGyroscopeData[0] * lastGyroscopeData[0] +
-            lastGyroscopeData[1] * lastGyroscopeData[1] +
-            lastGyroscopeData[2] * lastGyroscopeData[2]
-        )
+        val gyroMagnitude = getMovementMagnitude()
         return gyroMagnitude < STABLE_THRESHOLD
     }
 
     private fun isDeviceMoving(): Boolean {
-        val gyroMagnitude = kotlin.math.sqrt(
+        val gyroMagnitude = getMovementMagnitude()
+        return gyroMagnitude > IN_HAND_MOVEMENT_THRESHOLD
+    }
+
+    private fun getMovementMagnitude(): Float {
+        return sqrt(
             lastGyroscopeData[0] * lastGyroscopeData[0] +
-            lastGyroscopeData[1] * lastGyroscopeData[1] +
-            lastGyroscopeData[2] * lastGyroscopeData[2]
+                    lastGyroscopeData[1] * lastGyroscopeData[1] +
+                    lastGyroscopeData[2] * lastGyroscopeData[2]
         )
-        return gyroMagnitude > MOVEMENT_THRESHOLD
     }
 
     private fun mapPositionToAudioProfile(position: DevicePosition): AudioProfile {
@@ -220,32 +388,47 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
             DevicePosition.UPSIDE_DOWN -> AudioProfile.SILENT
             DevicePosition.IN_POCKET -> AudioProfile.VIBRATION
             DevicePosition.IN_HAND -> AudioProfile.GENERAL
-            DevicePosition.UNKNOWN -> AudioProfile.GENERAL
+            DevicePosition.UNKNOWN -> AudioProfile.SILENT
         }
     }
 
     private fun applyAudioProfile(profile: AudioProfile) {
-        // Check if sensor-based switching is enabled
         if (!isSensorSwitchingEnabled()) {
+            Log.d("SensorManager", "Sensor switching disabled, skipping audio profile change")
             return
         }
 
-        when (profile) {
-            AudioProfile.SILENT -> {
-                // Set to silent mode
-                audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
-                Log.d("SensorManager", "Applied SILENT profile")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (!notificationManager.isNotificationPolicyAccessGranted) {
+                Log.w("SensorManager", "DND permission not granted, cannot change audio mode")
+                return
             }
-            AudioProfile.VIBRATION -> {
-                // Set to vibration mode
-                audioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
-                Log.d("SensorManager", "Applied VIBRATION profile")
+        }
+
+        try {
+            val oldRingerMode = audioManager.ringerMode
+            when (profile) {
+                AudioProfile.SILENT -> {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                    Log.d("SensorManager", "✓ Applied SILENT profile (was: $oldRingerMode)")
+                }
+                AudioProfile.VIBRATION -> {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
+                    Log.d("SensorManager", "✓ Applied VIBRATION profile (was: $oldRingerMode)")
+                }
+                AudioProfile.GENERAL -> {
+                    audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+                    val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING)
+                    val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING)
+                    if (currentVolume == 0) {
+                        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume / 2, 0)
+                    }
+                    Log.d("SensorManager", "✓ Applied GENERAL profile (was: $oldRingerMode, volume: $currentVolume/$maxVolume)")
+                }
             }
-            AudioProfile.GENERAL -> {
-                // Set to normal mode
-                audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-                Log.d("SensorManager", "Applied GENERAL profile")
-            }
+        } catch (e: SecurityException) {
+            Log.e("SensorManager", "SecurityException: Cannot modify audio settings", e)
         }
     }
 
@@ -256,9 +439,16 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
     fun setSensorSwitchingEnabled(enabled: Boolean) {
         sharedPreferences.edit().putBoolean("sensor_switching_enabled", enabled).apply()
         if (!enabled) {
-            // Reset to normal mode when disabled
             audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
         }
+    }
+
+    fun setFeatureEnabled(position: DevicePosition, enabled: Boolean) {
+        featureEnabled[position] = enabled
+        Log.d("SensorManager", "Feature ${position.name} set to: $enabled")
+        handler.postDelayed({
+            detectAndUpdatePosition()
+        }, 100)
     }
 
     fun getCurrentPosition(): DevicePosition = currentPosition
@@ -267,13 +457,12 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
     fun setPerformanceMode(enabled: Boolean) {
         isPerformanceMode = enabled
         sharedPreferences.edit().putBoolean("performance_mode", enabled).apply()
-        
-        // Restart sensor listening with new performance settings
+
         if (positionUpdateCallback != null) {
             stopListening()
             startListening(positionUpdateCallback!!)
         }
-        
+
         Log.d("SensorManager", "Performance mode set to: $enabled")
     }
 
@@ -283,8 +472,20 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
         val stableTime = if (isPositionStable()) "Stable" else "Active"
         val mode = if (isPerformanceMode) "Performance" else "Normal"
         val interval = if (isPerformanceMode) performanceModeInterval else sensorCheckInterval
-        
+
         return "Mode: $mode | Status: $stableTime | Interval: ${interval}ms"
+    }
+
+    fun getDebugInfo(): String {
+        val x = lastAccelerometerData[0]
+        val y = lastAccelerometerData[1]
+        val z = lastAccelerometerData[2]
+        val movement = getMovementMagnitude()
+
+        return """
+            Z: ${String.format("%.2f", z)} | Prox: ${String.format("%.1f", proximityDistance)}cm
+            Move: ${String.format("%.2f", movement)} | Pos: $currentPosition
+        """.trimIndent()
     }
 
     fun cleanup() {
