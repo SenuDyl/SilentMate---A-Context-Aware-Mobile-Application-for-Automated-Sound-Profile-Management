@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">SilentMate</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="my_map_api_key">AIzaSyBRATroEbda7N4y4tMo5z81z8HLHfoqyYA</string>
+    <string name="my_map_api_key"></string>
 </resources>

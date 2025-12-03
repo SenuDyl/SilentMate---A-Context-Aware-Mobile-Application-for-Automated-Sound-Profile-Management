@@ -71,13 +71,13 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="0dp">
+        android:layout_marginBottom="0dp"
+        android:background="?attr/colorSurface">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_height="wrap_content">
 
             <include
                 layout="@layout/layout_add_event_content"

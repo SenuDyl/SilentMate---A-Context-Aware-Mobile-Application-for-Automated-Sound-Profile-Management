@@ -416,18 +416,18 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
     }
 
     private fun applyAudioProfile(profile: AudioProfile) {
-        if (!isSensorSwitchingEnabled()) {
-            Log.d("SensorManager", "Sensor switching disabled, skipping audio profile change")
-            return
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (!notificationManager.isNotificationPolicyAccessGranted) {
-                Log.w("SensorManager", "DND permission not granted, cannot change audio mode")
-                return
-            }
-        }
+//        if (!isSensorSwitchingEnabled()) {
+//            Log.d("SensorManager", "Sensor switching disabled, skipping audio profile change")
+//            return
+//        }
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//            if (!notificationManager.isNotificationPolicyAccessGranted) {
+//                Log.w("SensorManager", "DND permission not granted, cannot change audio mode")
+//                return
+//            }
+//        }
 
         try {
             val oldRingerMode = audioManager.ringerMode

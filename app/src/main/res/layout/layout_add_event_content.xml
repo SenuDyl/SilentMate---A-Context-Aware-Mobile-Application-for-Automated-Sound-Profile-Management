@@ -17,19 +17,11 @@
         android:textStyle="bold"
         android:layout_marginTop="8dp" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <EditText
+        android:id="@+id/eventTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/edittext_bg">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/eventTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter event title"
-            android:padding="10dp"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        android:hint="Enter event title"
 
         android:background="@drawable/edittext_bg"
         android:padding="10dp"
@@ -43,7 +35,6 @@
         android:weightSum="2"
         android:layout_marginTop="12dp">
 
-        <!-- Start Time -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -54,31 +45,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start Time"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <EditText
+                android:id="@+id/startTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="8.15 a.m."
+                android:background="@drawable/edittext_bg"
+                android:padding="10dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/edittext_bg">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/startTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="8.15 a.m."
-                    android:padding="10dp"
-                    android:focusable="false" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:focusable="false"/>
         </LinearLayout>
 
         <Space
             android:layout_width="12dp"
             android:layout_height="match_parent" />
 
-        <!-- End Time -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -89,27 +74,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="End Time"
-                android:textSize="14sp"
+                android:textSize="14dp"
                 android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <EditText
+                android:id="@+id/endTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="10.15 a.m."
+                android:background="@drawable/edittext_bg"
+                android:padding="10dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/edittext_bg">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/endTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="10.15 a.m."
-                    android:padding="10dp"
-                    android:focusable="false" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:focusable="false"/>
         </LinearLayout>
     </LinearLayout>
-
 
     <!-- Start Date -->
     <TextView
@@ -117,7 +96,7 @@
         android:layout_height="wrap_content"
         android:text="Start Date"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
@@ -137,14 +116,15 @@
             android:layout_weight="1"
             android:text="Select a date"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
         <ImageView
             android:id="@+id/startDateIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/baseline_calendar_month_24"
-            app:tint="@color/darkPurple" />
+            app:tint="?attr/colorOnSurface" />
     </LinearLayout>
 
 
@@ -154,62 +134,9 @@
         android:layout_height="wrap_content"
         android:text="Recurrence"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp" />
-
-<!--    <RadioGroup-->
-<!--        android:id="@+id/recurrenceGroup"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="4dp"-->
-<!--        android:gravity="center_vertical">-->
-
-<!--    <RadioButton-->
-<!--        android:id="@+id/oneTime"-->
-<!--        android:text="One-time"-->
-<!--        android:buttonTint="@color/radio_color"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:paddingStart="8dp"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:singleLine="true" />-->
-
-<!--    <RadioButton-->
-<!--        android:id="@+id/weekly"-->
-<!--        android:text="Weekly"-->
-<!--        android:buttonTint="@color/radio_color"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:paddingStart="8dp"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:singleLine="true" />-->
-
-<!--    <RadioButton-->
-<!--        android:id="@+id/biWeekly"-->
-<!--        android:text="Bi-Weekly"-->
-<!--        android:buttonTint="@color/radio_color"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:paddingStart="8dp"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:singleLine="true" />-->
-
-<!--    <RadioButton-->
-<!--        android:id="@+id/monthly"-->
-<!--        android:text="Monthly"-->
-<!--        android:buttonTint="@color/radio_color"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:paddingStart="8dp"-->
-<!--        android:paddingEnd="8dp"-->
-<!--        android:singleLine="true" />-->
-<!--    </RadioGroup>-->
 
     <GridLayout
         android:id="@+id/recurrenceGroup"
@@ -223,38 +150,52 @@
         android:paddingEnd="4dp"
         android:rowCount="2">
 
+        <!-- RadioGroup to group all radio buttons together (mutually exclusive) -->
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- RadioButton for "One-time" -->
             <RadioButton
                 android:id="@+id/oneTime"
                 android:text="Once"
-                android:textColor="?attr/colorOnSurface"
                 android:buttonTint="@color/radio_color"
-                android:layout_marginEnd="5dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
 
             <!-- RadioButton for "Daily" -->
             <RadioButton
                 android:id="@+id/daily"
                 android:text="Daily"
                 android:buttonTint="@color/radio_color"
-                android:layout_marginEnd="5dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
 
             <!-- RadioButton for "Weekly" -->
             <RadioButton
                 android:id="@+id/weekly"
                 android:text="Weekly"
                 android:buttonTint="@color/radio_color"
-                android:layout_marginEnd="5dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
 
+            <!-- RadioButton for "Monthly" -->
             <RadioButton
                 android:id="@+id/monthly"
                 android:text="Monthly"
-                android:textColor="?attr/colorOnSurface"
-                android:buttonTint="@color/radio_color" />
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:singleLine="true" />
         </RadioGroup>
 
     </GridLayout>
@@ -265,7 +206,7 @@
         android:layout_height="wrap_content"
         android:text="Location"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
@@ -273,6 +214,7 @@
         android:id="@+id/place_autocomplete_fragment"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
+        android:textColor="?attr/colorOnSurface"
         android:layout_height="wrap_content" />
 
     <com.google.android.gms.maps.MapView
@@ -281,14 +223,13 @@
         android:layout_height="150dp"
         android:layout_marginTop="8dp" />
 
-
     <!-- Action Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Action"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
@@ -306,8 +247,7 @@
             android:src="@drawable/baseline_volume_up_24"
             android:background="@drawable/rounded_button"
             app:tint="@color/white"
-            android:layout_marginEnd="20dp"
-            android:contentDescription="Sound On"/>
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/vibrate"
@@ -316,8 +256,7 @@
             android:src="@drawable/baseline_vibration_24"
             android:background="@drawable/rounded_button"
             app:tint="@color/white"
-            android:layout_marginEnd="20dp"
-            android:contentDescription="Vibrate"/>
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/soundOn"
@@ -325,8 +264,6 @@
             android:layout_height="50dp"
             android:src="@drawable/baseline_volume_off_24"
             android:background="@drawable/rounded_button"
-            app:tint="@color/white"
-            android:contentDescription="Sound Off"/>
+            app:tint="@color/white"/>
     </LinearLayout>
-
 </LinearLayout>

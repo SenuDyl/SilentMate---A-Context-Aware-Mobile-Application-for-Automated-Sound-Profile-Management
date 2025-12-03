@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.silentmate.KEY_EVENT_AUDIO_ENABLED
 import com.example.silentmate.R
 import com.google.android.gms.location.LocationServices
 import com.example.silentmate.database.EventDatabaseHelper
@@ -33,6 +34,15 @@ class EventStartWorker(appContext: Context, params: WorkerParameters) : Coroutin
 
     @SuppressLint("MissingPermission")
     override suspend fun doWork(): Result {
+        val sharedPrefs = applicationContext.getSharedPreferences("SilentMatePrefs", Context.MODE_PRIVATE)
+        val isEventAudioEnabled = sharedPrefs.getBoolean(KEY_EVENT_AUDIO_ENABLED, true)
+        Log.e("EventStartWorker", "isEventAudioEnabled, ${isEventAudioEnabled}")
+
+        if (!isEventAudioEnabled) {
+            Log.e("EventStartWorker", "Event-based audio switching option disabled, skipping")
+            return Result.success() // skip work safely
+        }
+
         val eventId = inputData.getLong(KEY_EVENT_ID, -1L)
         if (eventId == -1L) return Result.failure()
 

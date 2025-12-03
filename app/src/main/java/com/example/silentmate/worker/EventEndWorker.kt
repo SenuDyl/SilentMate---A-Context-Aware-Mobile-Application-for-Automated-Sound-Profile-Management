@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.example.silentmate.KEY_EVENT_AUDIO_ENABLED
 import com.example.silentmate.R
 import com.example.silentmate.database.EventDatabaseHelper
 import com.example.silentmate.model.Action
@@ -23,6 +24,16 @@ class EventEndWorker(appContext: Context, params: WorkerParameters)
 
             val prefs = applicationContext.getSharedPreferences("event_prefs", Context.MODE_PRIVATE)
             val applied = prefs.getBoolean("event_${eventId}_applied", false)
+
+            val sharedPrefs = applicationContext.getSharedPreferences("SilentMatePrefs", Context.MODE_PRIVATE)
+            // Skip events if the option is disabled
+            val isEventAudioEnabled = sharedPrefs.getBoolean(KEY_EVENT_AUDIO_ENABLED, true)
+            Log.e("EventEndWorker", "isEventAudioEnabled, ${isEventAudioEnabled}")
+
+            if (!isEventAudioEnabled) {
+                Log.e("EventEndWorker", "Event-based audio switching option disabled, skipping")
+                return Result.success() // skip work safely
+            }
 
             if (applied) {
                 // Only revert audio if we changed it

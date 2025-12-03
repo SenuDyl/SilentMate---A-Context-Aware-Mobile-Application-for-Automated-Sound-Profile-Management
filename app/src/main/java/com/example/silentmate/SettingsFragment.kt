@@ -26,6 +26,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
+const val KEY_EVENT_AUDIO_ENABLED = "event_audio_switch"
+
 class SettingsFragment : Fragment() {
 
     private lateinit var sharedPreferences: SharedPreferences
@@ -35,6 +37,7 @@ class SettingsFragment : Fragment() {
     private lateinit var sensorAccessSwitch: SwitchCompat
     private lateinit var performanceModeSwitch: SwitchCompat
     private lateinit var darkModeSwitch: SwitchCompat
+    private lateinit var eventAudioSwitch: SwitchCompat
 
     // Flags to prevent listeners from firing during programmatic changes
     private var isUpdatingProgrammatically = false
@@ -47,11 +50,11 @@ class SettingsFragment : Fragment() {
         updateSwitchWithoutListener(locationSwitch, allGranted)
         sharedPreferences.edit().putBoolean("location_permission", allGranted).apply()
 
-        if (allGranted) {
-            Toast.makeText(requireContext(), "Location permission granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
-        }
+//        if (allGranted) {
+//            Toast.makeText(requireContext(), "Location permission granted", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -60,11 +63,11 @@ class SettingsFragment : Fragment() {
         updateSwitchWithoutListener(notificationsSwitch, isGranted)
         sharedPreferences.edit().putBoolean("notifications_enabled", isGranted).apply()
 
-        if (isGranted) {
-            Toast.makeText(requireContext(), "Notification permission granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "Notification permission denied", Toast.LENGTH_SHORT).show()
-        }
+//        if (isGranted) {
+//            Toast.makeText(requireContext(), "Notification permission granted", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(requireContext(), "Notification permission denied", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     @SuppressLint("MissingInflatedId")
@@ -81,6 +84,7 @@ class SettingsFragment : Fragment() {
         sensorAccessSwitch = view.findViewById(R.id.sensorAccessSwitch)
         performanceModeSwitch = view.findViewById(R.id.performanceModeSwitch)
         darkModeSwitch = view.findViewById(R.id.darkModeSwitch)
+        eventAudioSwitch = view.findViewById(R.id.eventAudioSwitch)
 
         // Apply your app's color scheme to all switches
         applySwitchColors()
@@ -137,6 +141,7 @@ class SettingsFragment : Fragment() {
         applySwitchColorStateList(sensorAccessSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(performanceModeSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(darkModeSwitch, thumbColorStateList, trackColorStateList)
+        applySwitchColorStateList(eventAudioSwitch, thumbColorStateList, trackColorStateList)
     }
 
     private fun applySwitchColorStateList(
@@ -202,6 +207,9 @@ class SettingsFragment : Fragment() {
         darkModeSwitch.isChecked = sharedPreferences.getBoolean("dark_mode", false)
 
         isUpdatingProgrammatically = false
+
+        eventAudioSwitch.isChecked = sharedPreferences.getBoolean(KEY_EVENT_AUDIO_ENABLED, true) // default ON
+
     }
 
     private fun setupSwitchListeners() {
@@ -212,7 +220,7 @@ class SettingsFragment : Fragment() {
                 requestNotificationPermission()
             } else {
                 sharedPreferences.edit().putBoolean("notifications_enabled", false).apply()
-                Toast.makeText(requireContext(), "Notifications disabled", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Notifications disabled", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -223,9 +231,9 @@ class SettingsFragment : Fragment() {
                 requestLocationPermission()
             } else {
                 sharedPreferences.edit().putBoolean("location_permission", false).apply()
-                Toast.makeText(requireContext(),
-                    "Location disabled. Go to App Settings to revoke permission.",
-                    Toast.LENGTH_LONG).show()
+//                Toast.makeText(requireContext(),
+//                    "Location disabled. Go to App Settings to revoke permission.",
+//                    Toast.LENGTH_LONG).show()
             }
         }
 
@@ -236,9 +244,9 @@ class SettingsFragment : Fragment() {
                 requestDndAccess()
             } else {
                 sharedPreferences.edit().putBoolean("dnd_override", false).apply()
-                Toast.makeText(requireContext(),
-                    "DND Override disabled. Go to App Settings to revoke access.",
-                    Toast.LENGTH_LONG).show()
+//                Toast.makeText(requireContext(),
+//                    "DND Override disabled. Go to App Settings to revoke access.",
+//                    Toast.LENGTH_LONG).show()
             }
         }
 
@@ -247,11 +255,11 @@ class SettingsFragment : Fragment() {
 
             sharedPreferences.edit().putBoolean("sensor_access", isChecked).apply()
 
-            if (isChecked) {
-                Toast.makeText(requireContext(), "Sensor access enabled", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Sensor access disabled", Toast.LENGTH_SHORT).show()
-            }
+//            if (isChecked) {
+//                Toast.makeText(requireContext(), "Sensor access enabled", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(requireContext(), "Sensor access disabled", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         performanceModeSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -266,7 +274,7 @@ class SettingsFragment : Fragment() {
                 "Standard sensor frequency for real-time detection"
             }
 
-            Toast.makeText(requireContext(), "$mode: $description", Toast.LENGTH_LONG).show()
+//            Toast.makeText(requireContext(), "$mode: $description", Toast.LENGTH_LONG).show()
             Log.d("SettingsFragment", "Performance mode changed: $mode - $description")
         }
 
@@ -289,9 +297,19 @@ class SettingsFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(desiredMode)
 
                 val message = if (isChecked) "Dark mode enabled" else "Light mode enabled"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
+
+        eventAudioSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
+            sharedPreferences.edit().putBoolean(KEY_EVENT_AUDIO_ENABLED, isChecked).apply()
+            val message = if (isChecked) "Auto Audio Mode enabled" else "Auto Audio Mode disabled"
+            Log.d("SettingsFragment", message)
+//    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun requestNotificationPermission() {
@@ -305,11 +323,11 @@ class SettingsFragment : Fragment() {
                 notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             } else {
                 sharedPreferences.edit().putBoolean("notifications_enabled", true).apply()
-                Toast.makeText(requireContext(), "Notifications already enabled", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Notifications already enabled", Toast.LENGTH_SHORT).show()
             }
         } else {
             sharedPreferences.edit().putBoolean("notifications_enabled", true).apply()
-            Toast.makeText(requireContext(), "Notifications enabled", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "Notifications enabled", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -333,7 +351,7 @@ class SettingsFragment : Fragment() {
             )
         } else {
             sharedPreferences.edit().putBoolean("location_permission", true).apply()
-            Toast.makeText(requireContext(), "Location already enabled", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "Location already enabled", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -344,18 +362,18 @@ class SettingsFragment : Fragment() {
             if (!notificationManager.isNotificationPolicyAccessGranted) {
                 val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
                 startActivity(intent)
-                Toast.makeText(
-                    requireContext(),
-                    "Please grant Do Not Disturb access to Silent Mate",
-                    Toast.LENGTH_LONG
-                ).show()
+//                Toast.makeText(
+//                    requireContext(),
+//                    "Please grant Do Not Disturb access to Silent Mate",
+//                    Toast.LENGTH_LONG
+//                ).show()
             } else {
                 sharedPreferences.edit().putBoolean("dnd_override", true).apply()
-                Toast.makeText(requireContext(), "DND access already granted", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "DND access already granted", Toast.LENGTH_SHORT).show()
             }
         } else {
             sharedPreferences.edit().putBoolean("dnd_override", true).apply()
-            Toast.makeText(requireContext(), "DND Override enabled", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "DND Override enabled", Toast.LENGTH_SHORT).show()
         }
     }
 
