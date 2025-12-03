@@ -1,25 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- File: res/values-night/themes.xml -->
 <resources>
-    <!-- Base application theme (Dark) -->
+    <!-- Dark Mode Theme -->
     <style name="Base.Theme.SilentMate" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Primary brand color -->
-        <item name="colorPrimary">#7B6FA0</item>
-        <item name="colorPrimaryVariant">#5B5380</item>
+        <!-- Primary brand color - Lighter purple for dark mode -->
+        <item name="colorPrimary">#9E8FD9</item>
+        <item name="colorPrimaryVariant">@color/purple</item>
         <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Secondary brand color -->
-        <item name="colorSecondary">#FFD54F</item>
-        <item name="colorSecondaryVariant">#FFC107</item>
+        <!-- Secondary brand color - Lighter pink for dark mode -->
+        <item name="colorSecondary">#FFC4D6</item>
+        <item name="colorSecondaryVariant">@color/pink</item>
         <item name="colorOnSecondary">@color/black</item>
 
-        <!-- Background colors -->
-        <item name="android:colorBackground">#121212</item>
-        <item name="colorSurface">#1E1E1E</item>
-        <item name="colorOnSurface">@color/white</item>
+        <!-- Background colors for dark mode -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
 
-        <!-- Status bar -->
-        <item name="android:statusBarColor">#5B5380</item>
+
+        <item name="colorOnSurfaceVariant">@color/text_secondary_dark</item>
+
+        <!-- Status bar for dark mode -->
+        <item name="android:statusBarColor">@color/background_dark</item>
         <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/surface_dark</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
     <style name="Theme.SilentMate" parent="Base.Theme.SilentMate" />

@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Checked color -->
-    <item android:color="@color/purple" android:state_checked="true" />
 
-    <!-- Unchecked color -->
-    <item android:color="@color/gray" android:state_checked="false" />
+    <!-- Checked -->
+    <item android:state_checked="true"
+        android:color="@color/purple" />
+
+    <!-- Unchecked (your custom gray) -->
+    <item android:state_checked="false"
+        android:color="@color/gray" />
+
+    <!-- Fallback for any other state (uses Material theme color) -->
+    <item android:color="?attr/colorOnSurfaceVariant" />
 </selector>

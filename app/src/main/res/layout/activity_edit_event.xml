@@ -1,103 +1,119 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="?attr/colorSurface">
 
-    <!-- Fixed Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/darkPurple"
-        app:titleTextColor="@color/white">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="?attr/colorSurface">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
+        <!-- Left content: Event details -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-            <!-- Back icon -->
-            <ImageView
-                android:id="@+id/backIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_arrow_back_24"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
-
-            <!-- Title -->
-            <TextView
-                android:id="@+id/editEvent"
+            <!-- Horizontal layout for icon + title -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
-                android:text="Edit Event"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_toEndOf="@id/backIcon"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <!-- Done and Close icons -->
-            <ImageView
-                android:id="@+id/closeIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_close_24"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                app:tint="@color/white" />
+                <ImageView
+                    android:id="@+id/eventIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/baseline_volume_off_24"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/yellow" />
 
-            <ImageView
-                android:id="@+id/doneIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_done_24"
-                android:layout_toStartOf="@id/closeIcon"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
-                app:tint="@color/white" />
+                <TextView
+                    android:id="@+id/eventTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tech Conference"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+            </LinearLayout>
 
-    <!-- Scrollable content below Toolbar -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="56dp">
+            <TextView
+                android:id="@+id/eventDays"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mon Tue Wed Thu Fri Sat"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            style="@style/AppFontStyle">
+            <TextView
+                android:id="@+id/eventTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:15 AM - 12:15 AM"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
 
-            <include
-                layout="@layout/layout_add_event_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/eventLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Colombo"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/eventRecurrence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="One-time"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
         </LinearLayout>
-    </ScrollView>
 
-    <!-- Fixed Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        android:background="@color/darkPurple"
-        app:itemIconTint="@color/white"
-        app:labelVisibilityMode="unlabeled"
-        app:itemIconSize="32dp"
-        app:menu="@menu/bottom_menu"/>
+        <!-- Right buttons: Edit & Delete -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end"
+            android:layout_marginStart="8dp">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <Button
+                android:id="@+id/editButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/purple"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="4dp"/>
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/pink"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
