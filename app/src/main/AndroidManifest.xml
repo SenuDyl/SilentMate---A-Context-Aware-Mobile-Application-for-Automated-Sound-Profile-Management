@@ -64,12 +64,12 @@
             android:name=".EditEventActivity"
             android:exported="false" />
         <activity android:name=".TestDatabaseActivity" />
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SensorActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".SettingsActivity"-->
+<!--            android:exported="false" />-->
+<!--        <activity-->
+<!--            android:name=".SensorActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".AddEventActivity"
             android:exported="false" />
@@ -94,7 +94,6 @@
             android:exported="true" />
 
         <!-- WorkManager default initialization happens automatically -->
-
 
         <!-- Sensor Activity -->
         <activity

@@ -41,18 +41,18 @@ class MainActivity : AppCompatActivity() {
             "sensor" -> {
                 replaceFragment(sensorFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_sensor
-                binding.addEventFab.show()
+//                binding.addEventFab.show()
             }
             "settings" -> {
                 replaceFragment(settingsFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_settings
-                binding.addEventFab.hide()
+//                binding.addEventFab.hide()
             }
             else -> {
                 // Show home fragment by default
                 replaceFragment(homeFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_home
-                binding.addEventFab.show()
+//                binding.addEventFab.show()
             }
         }
 
@@ -60,17 +60,17 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> {
                     replaceFragment(homeFragment)
-                    binding.addEventFab.show()
+//                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_sensor -> {
                     replaceFragment(sensorFragment)
-                    binding.addEventFab.show()
+//                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_settings -> {
                     replaceFragment(settingsFragment)
-                    binding.addEventFab.hide()
+//                    binding.addEventFab.hide()
                     true
                 }
                 else -> false
@@ -103,10 +103,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.addEventFab.setOnClickListener {
-            val intent = Intent(this, AddEventActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.addEventFab.setOnClickListener {
+//            val intent = Intent(this, AddEventActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
     private fun replaceFragment(fragment: Fragment) {
