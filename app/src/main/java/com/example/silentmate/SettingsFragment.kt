@@ -34,12 +34,15 @@ class SettingsFragment : Fragment() {
     private lateinit var performanceModeSwitch: SwitchCompat
     private lateinit var darkModeSwitch: SwitchCompat
 
+    // Flags to prevent listeners from firing during programmatic changes
+    private var isUpdatingProgrammatically = false
+
     // Permission launchers
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val allGranted = permissions.values.all { it }
-        locationSwitch.isChecked = allGranted
+        updateSwitchWithoutListener(locationSwitch, allGranted)
         sharedPreferences.edit().putBoolean("location_permission", allGranted).apply()
 
         if (allGranted) {
@@ -52,7 +55,7 @@ class SettingsFragment : Fragment() {
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        notificationsSwitch.isChecked = isGranted
+        updateSwitchWithoutListener(notificationsSwitch, isGranted)
         sharedPreferences.edit().putBoolean("notifications_enabled", isGranted).apply()
 
         if (isGranted) {
@@ -76,7 +79,7 @@ class SettingsFragment : Fragment() {
         performanceModeSwitch = view.findViewById(R.id.performanceModeSwitch)
         darkModeSwitch = view.findViewById(R.id.darkModeSwitch)
 
-        // Apply purple color to all switches
+        // Apply your app's color scheme to all switches
         applySwitchColors()
 
         // Set up back button click listener
@@ -87,34 +90,37 @@ class SettingsFragment : Fragment() {
                 .commit()
         }
 
-        // Load current permission states
-        loadPermissionStates()
-
-        // Set up switch listeners
+        // Set up switch listeners FIRST
         setupSwitchListeners()
+
+        // Load current permission states AFTER listeners are set up
+        loadPermissionStates()
 
         return view
     }
 
     private fun applySwitchColors() {
-        val purpleColor = Color.parseColor("#5B5380")
-        val lightPurple = Color.parseColor("#B8A8D8")
+        // Use your app's color scheme: Purple and Pink
+        val purpleColor = Color.parseColor("#7766C6")  // Purple
+        val pinkColor = Color.parseColor("#F9B0C3")    // Pink
+        val lightPurple = Color.parseColor("#B8A8E6")  // Light Purple
+        val lightPink = Color.parseColor("#FDE0E9")    // Light Pink
 
-        // Create ColorStateLists for thumb
+        // Create ColorStateLists for thumb (the circle)
         val thumbStates = arrayOf(
             intArrayOf(android.R.attr.state_checked),
             intArrayOf(-android.R.attr.state_checked)
         )
         val thumbColors = intArrayOf(
-            purpleColor,  // Purple when ON
-            Color.WHITE   // White when OFF
+            pinkColor,    // Pink when ON
+            purpleColor   // Purple when OFF
         )
         val thumbColorStateList = ColorStateList(thumbStates, thumbColors)
 
-        // Create ColorStateLists for track
+        // Create ColorStateLists for track (the background)
         val trackColors = intArrayOf(
-            lightPurple,     // Light purple when ON
-            Color.LTGRAY     // Gray when OFF
+            lightPink,    // Light pink when ON
+            lightPurple   // Light purple when OFF
         )
         val trackColorStateList = ColorStateList(thumbStates, trackColors)
 
@@ -136,7 +142,17 @@ class SettingsFragment : Fragment() {
         switch.trackTintList = trackColors
     }
 
+    // Helper function to update switch state without triggering listener
+    private fun updateSwitchWithoutListener(switch: SwitchCompat, checked: Boolean) {
+        isUpdatingProgrammatically = true
+        switch.isChecked = checked
+        isUpdatingProgrammatically = false
+    }
+
     private fun loadPermissionStates() {
+        // Use helper function to prevent triggering listeners
+        isUpdatingProgrammatically = true
+
         // Check notification permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasNotificationPerm = ContextCompat.checkSelfPermission(
@@ -178,10 +194,14 @@ class SettingsFragment : Fragment() {
 
         // Dark mode from preferences
         darkModeSwitch.isChecked = sharedPreferences.getBoolean("dark_mode", false)
+
+        isUpdatingProgrammatically = false
     }
 
     private fun setupSwitchListeners() {
         notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
             if (isChecked) {
                 requestNotificationPermission()
             } else {
@@ -191,6 +211,8 @@ class SettingsFragment : Fragment() {
         }
 
         locationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
             if (isChecked) {
                 requestLocationPermission()
             } else {
@@ -202,6 +224,8 @@ class SettingsFragment : Fragment() {
         }
 
         dndOverrideSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
             if (isChecked) {
                 requestDndAccess()
             } else {
@@ -213,6 +237,8 @@ class SettingsFragment : Fragment() {
         }
 
         sensorAccessSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
             sharedPreferences.edit().putBoolean("sensor_access", isChecked).apply()
 
             if (isChecked) {
@@ -223,6 +249,8 @@ class SettingsFragment : Fragment() {
         }
 
         performanceModeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+
             sharedPreferences.edit().putBoolean("performance_mode", isChecked).apply()
 
             val mode = if (isChecked) "Performance Mode" else "Normal Mode"
@@ -237,18 +265,25 @@ class SettingsFragment : Fragment() {
         }
 
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            // Prevent listener from firing during load
-            if (darkModeSwitch.isPressed || !isAdded) {
-                sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
 
-                // Apply dark mode immediately
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    Toast.makeText(requireContext(), "Dark mode enabled", Toast.LENGTH_SHORT).show()
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    Toast.makeText(requireContext(), "Light mode enabled", Toast.LENGTH_SHORT).show()
-                }
+            // Save preference
+            sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
+
+            // Get current night mode
+            val currentMode = AppCompatDelegate.getDefaultNightMode()
+            val desiredMode = if (isChecked) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+
+            // Only apply if mode is changing
+            if (currentMode != desiredMode) {
+                AppCompatDelegate.setDefaultNightMode(desiredMode)
+
+                val message = if (isChecked) "Dark mode enabled" else "Light mode enabled"
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -321,6 +356,7 @@ class SettingsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // Refresh permission states when returning to the fragment
+        // The isUpdatingProgrammatically flag will prevent listeners from firing
         loadPermissionStates()
     }
 }
