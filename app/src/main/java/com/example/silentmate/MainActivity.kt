@@ -2,16 +2,19 @@ package com.example.silentmate
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.silentmate.databinding.ActivityMainBinding
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -21,13 +24,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Apply saved theme preference BEFORE super.onCreate()
-        val sharedPreferences = getSharedPreferences("SilentMatePrefs", MODE_PRIVATE)
-        val isDarkMode = sharedPreferences.getBoolean("dark_mode", false)
+        // IMPORTANT: Only apply on first creation, not on configuration changes
+        if (savedInstanceState == null) {
+            val sharedPreferences = getSharedPreferences("SilentMatePrefs", MODE_PRIVATE)
+            val isDarkMode = sharedPreferences.getBoolean("dark_mode", false)
 
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            val desiredMode = if (isDarkMode) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+
+            // Only set if it's different from current mode
+            if (AppCompatDelegate.getDefaultNightMode() != desiredMode) {
+                AppCompatDelegate.setDefaultNightMode(desiredMode)
+            }
         }
 
         super.onCreate(savedInstanceState)
@@ -35,24 +46,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set status bar color for entire app
+        setupStatusBarColor()
+
         // Check if a specific tab was requested
         val selectedTab = intent.getStringExtra("selected_tab")
         when (selectedTab) {
             "sensor" -> {
                 replaceFragment(sensorFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_sensor
-//                binding.addEventFab.show()
             }
             "settings" -> {
                 replaceFragment(settingsFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_settings
-//                binding.addEventFab.hide()
             }
             else -> {
                 // Show home fragment by default
                 replaceFragment(homeFragment)
                 binding.bottomNavigation.selectedItemId = R.id.nav_home
-//                binding.addEventFab.show()
             }
         }
 
@@ -60,42 +71,56 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home -> {
                     replaceFragment(homeFragment)
-//                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_sensor -> {
                     replaceFragment(sensorFragment)
-//                    binding.addEventFab.show()
                     true
                 }
                 R.id.nav_settings -> {
                     replaceFragment(settingsFragment)
-//                    binding.addEventFab.hide()
                     true
                 }
                 else -> false
             }
         }
 
-//        val intent = Intent(this, TestDatabaseActivity::class.java)
-//        startActivity(intent)
-//        finish()
-
-        // Disable dark mode
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-        // Show tutorial if it hasn't been seen yet
+        // Show tutorial only on first launch (not on theme changes)
         showTutorialIfNeeded()
     }
 
+    private fun setupStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Set status bar color to match app header (darkPurple #46467A)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.darkPurple)
+
+            // Set light status bar icons (white icons for dark purple background)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Clear the light status bar flag to show white icons
+                var flags = window.decorView.systemUiVisibility
+                flags = flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                window.decorView.systemUiVisibility = flags
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reapply status bar color when activity resumes
+        setupStatusBarColor()
+    }
+
     private fun showTutorialIfNeeded() {
+        // Only show tutorial once, even across theme changes
         val prefs = getSharedPreferences("SilentMatePrefs", Context.MODE_PRIVATE)
         val seen = prefs.getBoolean("tutorial_seen", false)
-        if (!seen) {
-            // Use lifecycleScope to ensure the activity is running
+
+        // Don't show tutorial if it's been seen OR if dark mode setting exists (app was used before)
+        val darkModeSet = prefs.contains("dark_mode")
+
+        if (!seen && !darkModeSet) {
             lifecycleScope.launch {
-                // Small delay to let the activity fully attach
-                delay(100) // 100ms is usually enough
+                delay(100)
                 if (!isFinishing && !isDestroyed) {
                     val tutorialDialog = TutorialDialogFragment()
                     tutorialDialog.isCancelable = false
@@ -103,10 +128,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-//        binding.addEventFab.setOnClickListener {
-//            val intent = Intent(this, AddEventActivity::class.java)
-//            startActivity(intent)
-//        }
     }
 
     private fun replaceFragment(fragment: Fragment) {

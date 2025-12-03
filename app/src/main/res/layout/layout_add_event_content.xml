@@ -4,23 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?attr/colorSurface">
 
     <!-- Event Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Title"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp" />
 
-    <EditText
-        android:id="@+id/eventTitle"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter event title"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edittext_bg">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/eventTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter event title"
+            android:padding="10dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
         android:background="@drawable/edittext_bg"
         android:padding="10dp"
@@ -34,6 +43,7 @@
         android:weightSum="2"
         android:layout_marginTop="12dp">
 
+        <!-- Start Time -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -44,25 +54,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start Time"
-                android:textSize="14dp"
-                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/startTime"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="8.15 a.m."
-                android:background="@drawable/edittext_bg"
-                android:padding="10dp"
                 android:layout_marginTop="4dp"
-                android:focusable="false"/>
+                android:background="@drawable/edittext_bg">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/startTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="8.15 a.m."
+                    android:padding="10dp"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <Space
             android:layout_width="12dp"
             android:layout_height="match_parent" />
 
+        <!-- End Time -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -73,21 +89,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="End Time"
-                android:textSize="14dp"
-                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
-            <EditText
-                android:id="@+id/endTime"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="10.15 a.m."
-                android:background="@drawable/edittext_bg"
-                android:padding="10dp"
                 android:layout_marginTop="4dp"
-                android:focusable="false"/>
+                android:background="@drawable/edittext_bg">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/endTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="10.15 a.m."
+                    android:padding="10dp"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
     </LinearLayout>
+
 
     <!-- Start Date -->
     <TextView
@@ -95,8 +117,8 @@
         android:layout_height="wrap_content"
         android:text="Start Date"
         android:textStyle="bold"
-        android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
     <LinearLayout
@@ -114,9 +136,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Select a date"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-             />
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/startDateIcon"
@@ -133,8 +154,8 @@
         android:layout_height="wrap_content"
         android:text="Recurrence"
         android:textStyle="bold"
-        android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp" />
 
 <!--    <RadioGroup-->
@@ -202,52 +223,38 @@
         android:paddingEnd="4dp"
         android:rowCount="2">
 
-        <!-- RadioGroup to group all radio buttons together (mutually exclusive) -->
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <!-- RadioButton for "One-time" -->
             <RadioButton
                 android:id="@+id/oneTime"
                 android:text="Once"
+                android:textColor="?attr/colorOnSurface"
                 android:buttonTint="@color/radio_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:singleLine="true" />
+                android:layout_marginEnd="5dp" />
 
             <!-- RadioButton for "Daily" -->
             <RadioButton
                 android:id="@+id/daily"
                 android:text="Daily"
                 android:buttonTint="@color/radio_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:singleLine="true" />
+                android:layout_marginEnd="5dp" />
 
             <!-- RadioButton for "Weekly" -->
             <RadioButton
                 android:id="@+id/weekly"
                 android:text="Weekly"
                 android:buttonTint="@color/radio_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:singleLine="true" />
+                android:layout_marginEnd="5dp" />
 
-            <!-- RadioButton for "Monthly" -->
             <RadioButton
                 android:id="@+id/monthly"
                 android:text="Monthly"
-                android:buttonTint="@color/radio_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="0dp"
-                android:singleLine="true" />
+                android:textColor="?attr/colorOnSurface"
+                android:buttonTint="@color/radio_color" />
         </RadioGroup>
 
     </GridLayout>
@@ -258,8 +265,8 @@
         android:layout_height="wrap_content"
         android:text="Location"
         android:textStyle="bold"
-        android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
     <fragment
@@ -274,14 +281,15 @@
         android:layout_height="150dp"
         android:layout_marginTop="8dp" />
 
+
     <!-- Action Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Action"
         android:textStyle="bold"
-        android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
     <LinearLayout
@@ -298,7 +306,8 @@
             android:src="@drawable/baseline_volume_up_24"
             android:background="@drawable/rounded_button"
             app:tint="@color/white"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:contentDescription="Sound On"/>
 
         <ImageButton
             android:id="@+id/vibrate"
@@ -307,7 +316,8 @@
             android:src="@drawable/baseline_vibration_24"
             android:background="@drawable/rounded_button"
             app:tint="@color/white"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:contentDescription="Vibrate"/>
 
         <ImageButton
             android:id="@+id/soundOn"
@@ -315,6 +325,8 @@
             android:layout_height="50dp"
             android:src="@drawable/baseline_volume_off_24"
             android:background="@drawable/rounded_button"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            android:contentDescription="Sound Off"/>
     </LinearLayout>
+
 </LinearLayout>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- File: res/values/colors.xml -->
 <resources>
     <!-- Base App Colors -->
     <color name="black">#FF000000</color>
@@ -13,21 +14,32 @@
     <color name="blue">#2196F3</color>
 
     <!-- Switch Colors - Using App's Color Palette -->
-    <color name="switch_thumb_unchecked">@color/purple</color> <!-- Purple for OFF/Right side -->
-    <color name="switch_track_unchecked">#B8A8E6</color> <!-- Light Purple background -->
-    <color name="switch_thumb_checked">@color/pink</color> <!-- Pink for ON/Active state -->
-    <color name="switch_track_checked">#FDE0E9</color> <!-- Light Pink background -->
+    <color name="switch_thumb_unchecked">@color/purple</color>
+    <color name="switch_track_unchecked">#B8A8E6</color>
+    <color name="switch_thumb_checked">@color/pink</color>
+    <color name="switch_track_checked">#FDE0E9</color>
 
-    <!-- Background Colors -->
+    <!-- Light Mode Colors -->
     <color name="background_light">@color/white</color>
-    <color name="background_dark">@color/black</color>
+    <color name="surface_light">#F5F5F5</color>
+    <color name="text_primary_light">@color/black</color>
+    <color name="text_secondary_light">@color/gray</color>
+    <color name="card_background_light">@color/white</color>
 
-    <!-- Text Colors -->
-    <color name="text_primary">@color/black</color>
-    <color name="text_secondary">@color/gray</color>
+    <!-- Dark Mode Colors -->
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="text_primary_dark">#E1E1E1</color>
+    <color name="text_secondary_dark">#B3B3B3</color>
+    <color name="card_background_dark">#2C2C2C</color>
 
     <!-- Status Colors -->
     <color name="status_active">@color/green</color>
     <color name="status_warning">@color/yellow</color>
     <color name="status_inactive">@color/lightGray</color>
+    <color name="error">#F44336</color>
+
+    <!-- Navigation Colors -->
+    <color name="bottom_nav_selected">@color/purple</color>
+    <color name="bottom_nav_unselected">@color/gray</color>
 </resources>

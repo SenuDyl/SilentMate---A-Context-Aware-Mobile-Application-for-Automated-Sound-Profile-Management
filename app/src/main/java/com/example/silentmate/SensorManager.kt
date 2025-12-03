@@ -238,17 +238,31 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
 
         // Priority 1: Check proximity sensor (in pocket) - This triggers VIBRATION mode
         if (featureEnabled[DevicePosition.IN_POCKET] == true) {
-            // Method 1: Check proximity sensor
-            if (proximityDistance < PROXIMITY_NEAR_THRESHOLD) {
-                Log.d("SensorManager", "✓ Detected: IN_POCKET via proximity (${proximityDistance}cm < $PROXIMITY_NEAR_THRESHOLD)")
+            // Method 1: Check proximity sensor - MUST be very close (under 5cm)
+            val isProximityNear = proximityDistance < PROXIMITY_NEAR_THRESHOLD
+
+            // Method 2: Check if phone is face down (screen facing down)
+            // When face down, Z-axis should be negative (between -3 and -12)
+            val isFaceDown = z < -3f && z > -12f
+
+            // Require BOTH proximity AND face down for reliable pocket detection
+            if (isProximityNear && isFaceDown) {
+                Log.d("SensorManager", "✓ Detected: IN_POCKET (proximity=${proximityDistance}cm + face-down Z=$z)")
                 return DevicePosition.IN_POCKET
             }
 
-            // Method 2: FALLBACK - Check if phone is face down (screen facing down)
-            // When face down, Z-axis should be negative (between -5 and -12)
-            if (z < -3f && z > -12f) {
-                Log.d("SensorManager", "✓ Detected: IN_POCKET via face-down position (Z=$z)")
+            // Fallback: If proximity is VERY close (under 2cm), assume pocket even without face-down
+            if (proximityDistance < 2f) {
+                Log.d("SensorManager", "✓ Detected: IN_POCKET (very close proximity=${proximityDistance}cm)")
                 return DevicePosition.IN_POCKET
+            }
+
+            // Log why pocket detection didn't trigger
+            if (isProximityNear && !isFaceDown) {
+                Log.d("SensorManager", "⚠️ Proximity near (${proximityDistance}cm) but NOT face-down (Z=$z)")
+            }
+            if (!isProximityNear && isFaceDown) {
+                Log.d("SensorManager", "⚠️ Face-down (Z=$z) but proximity too far (${proximityDistance}cm)")
             }
         }
 
@@ -266,8 +280,17 @@ class SilentMateSensorManager(private val context: Context) : SensorEventListene
             }
         }
 
-        // Priority 3: Everything else (on desk, stable position) = SILENT mode
-        Log.d("SensorManager", "Detected: UNKNOWN (on desk - stable position)")
+        // Priority 3: Check if upside down (face up, stable on desk) - SILENT mode
+        if (featureEnabled[DevicePosition.UPSIDE_DOWN] == true) {
+            // Phone is face up (Z between 7 and 12) and stable (low movement)
+            if (z > 7f && z < 12f && movement < DESK_STABLE_THRESHOLD) {
+                Log.d("SensorManager", "✓ Detected: UPSIDE_DOWN (face up on desk, Z=$z, movement=$movement)")
+                return DevicePosition.UPSIDE_DOWN
+            }
+        }
+
+        // Priority 4: Everything else (default state)
+        Log.d("SensorManager", "Detected: UNKNOWN (default state)")
         return DevicePosition.UNKNOWN
     }
 
