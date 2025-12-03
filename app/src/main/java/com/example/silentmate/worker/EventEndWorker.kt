@@ -7,8 +7,11 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.silentmate.R
+import com.example.silentmate.database.EventDatabaseHelper
 import com.example.silentmate.model.Action
+import com.example.silentmate.model.Recurrence
 import com.example.silentmate.utils.AudioProfileUtils
+import com.example.silentmate.utils.computeNextOccurrence
 
 class EventEndWorker(appContext: Context, params: WorkerParameters)
     : CoroutineWorker(appContext, params) {
@@ -28,6 +31,24 @@ class EventEndWorker(appContext: Context, params: WorkerParameters)
             } else {
                 // No action taken at start → ignore
                 Log.d("EventEndWorker", "End worker skipped. Audio was never changed.")
+            }
+
+            // ---- RESCHEDULE NEXT OCCURRENCE ------------------------------------------
+            val db = EventDatabaseHelper(applicationContext)
+            val event = db.getEventById(eventId.toInt())
+
+            if (event != null && event.recurrence != Recurrence.ONCE) {
+                val next = computeNextOccurrence(event)
+
+                if (next != null) {
+                    WorkManagerScheduler.scheduleEvent(
+                        applicationContext,
+                        event.id.toLong(),
+                        next.startMillis,
+                        next.endMillis
+                    )
+                    Log.d("RecurrenceTest", "Next occurrence scheduled at: ${next.startMillis}")
+                }
             }
 
             Result.success()

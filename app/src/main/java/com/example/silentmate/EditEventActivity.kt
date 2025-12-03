@@ -45,7 +45,7 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var recurrenceGroup: GridLayout
     private lateinit var oneTimeButton: RadioButton
     private lateinit var weeklyButton: RadioButton
-    private lateinit var biWeeklyButton: RadioButton
+    private lateinit var dailyButton: RadioButton
     private lateinit var monthlyButton: RadioButton
     private lateinit var doneButton: ImageView
     private lateinit var cancelButton: ImageView
@@ -234,7 +234,7 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
         // Find the individual RadioButton views by their ID
         oneTimeButton = findViewById(R.id.oneTime)
         weeklyButton = findViewById(R.id.weekly)
-        biWeeklyButton = findViewById(R.id.biWeekly)
+        dailyButton = findViewById(R.id.daily)
         monthlyButton = findViewById(R.id.monthly)
 
         // Set the listener for each RadioButton
@@ -246,8 +246,8 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
             recurrence = Recurrence.WEEKLY
         }
 
-        biWeeklyButton.setOnClickListener {
-            recurrence = Recurrence.BIWEEKLY
+        dailyButton.setOnClickListener {
+            recurrence = Recurrence.DAILY
         }
 
         monthlyButton.setOnClickListener {
@@ -282,7 +282,7 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
             when (recurrence) {
                 Recurrence.ONCE -> oneTimeButton.isChecked = true
                 Recurrence.WEEKLY -> weeklyButton.isChecked = true
-                Recurrence.BIWEEKLY -> biWeeklyButton.isChecked = true
+                Recurrence.DAILY -> dailyButton.isChecked = true
                 Recurrence.MONTHLY -> monthlyButton.isChecked = true
             }
             action = event.action

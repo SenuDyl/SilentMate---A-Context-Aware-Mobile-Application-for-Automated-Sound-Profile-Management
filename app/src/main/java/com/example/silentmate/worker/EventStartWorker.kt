@@ -17,8 +17,10 @@ import com.google.android.gms.location.LocationServices
 import com.example.silentmate.database.EventDatabaseHelper
 import com.example.silentmate.geofence.GeofenceManager
 import com.example.silentmate.model.Event
+import com.example.silentmate.model.Recurrence
 import com.example.silentmate.utils.AudioProfileUtils
 import kotlinx.coroutines.tasks.await
+import com.example.silentmate.utils.computeNextOccurrence
 import java.time.LocalDateTime
 import java.time.ZoneId
 import kotlin.math.*
@@ -39,6 +41,7 @@ class EventStartWorker(appContext: Context, params: WorkerParameters) : Coroutin
 
         // Try one-shot location check using fused location provider
         val fusedClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+
         return try {
             // getCurrentLocation is preferred for one-shot (requires proper permissions)
             val loc: Location? = try {

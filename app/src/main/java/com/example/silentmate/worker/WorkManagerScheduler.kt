@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
@@ -13,6 +12,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
 object WorkManagerScheduler {
+
+    // Testing toggle (affects ALL workers safely)
+    private const val FORCE_IMMEDIATE = false
 
     // We'll give each event a unique work name "event_<id>"
     private fun workNameForEvent(eventId: Long) = "event_$eventId"
@@ -33,7 +35,6 @@ object WorkManagerScheduler {
         enqueueEndWorker(context, eventId, endDelay)
     }
 
-
     // For testing purposes
 //    fun scheduleEvent(context: Context, eventId: Long, startTimeMillis: Long) {
 //        // Force immediate execution for testing
@@ -41,10 +42,11 @@ object WorkManagerScheduler {
 //    }
 
     private fun enqueueWorker(context: Context, eventId: Long, delayMillis: Long) {
+        val finalDelay = if (FORCE_IMMEDIATE) 0L else delayMillis
         val input = workDataOf(EventStartWorker.KEY_EVENT_ID to eventId)
         val builder = OneTimeWorkRequestBuilder<EventStartWorker>()
             .setInputData(input)
-            .setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
+            .setInitialDelay(finalDelay, TimeUnit.MILLISECONDS)
 
         val req = builder.build()
         // unique per event
@@ -53,13 +55,18 @@ object WorkManagerScheduler {
 
     private fun enqueueEndWorker(context: Context, eventId: Long, delay: Long) {
         val data = workDataOf("eventId" to eventId)
-
+        val finalDelay = if (FORCE_IMMEDIATE) 0L else delay
         val request = OneTimeWorkRequestBuilder<EventEndWorker>()
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInitialDelay(finalDelay, TimeUnit.MILLISECONDS)
             .setInputData(data)
             .build()
 
-        WorkManager.getInstance(context).enqueue(request)
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "event_${eventId}_end",
+            ExistingWorkPolicy.REPLACE,
+            request
+        )
+
     }
 
 
