@@ -10,9 +10,9 @@
         <item name="android:paddingRight">10dp</item>
     </style>
 
-    <style name="AppFontStyle">
-        <item name="android:fontFamily">@font/noto_sans</item>
-    </style>
+<!--    <style name="AppFontStyle">-->
+<!--        <item name="android:fontFamily">@font/noto_sans</item>-->
+<!--    </style>-->
 
     <style name="DateToggle" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">wrap_content</item>

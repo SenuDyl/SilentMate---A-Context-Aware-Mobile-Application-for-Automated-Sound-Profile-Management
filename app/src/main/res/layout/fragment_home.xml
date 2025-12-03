@@ -17,8 +17,8 @@
         android:padding="16dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/baseline_volume_mute_24"
             app:tint="@color/white" />
 
@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:fontFamily="@font/noto_sans"
             android:text="SilentMate"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -60,7 +59,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
                 android:gravity="center"
                 android:text="No schedule created yet"
                 android:textColor="@color/gray"

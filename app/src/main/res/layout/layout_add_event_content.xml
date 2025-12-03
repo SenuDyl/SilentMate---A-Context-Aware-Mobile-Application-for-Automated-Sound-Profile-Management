@@ -219,20 +219,20 @@
                 android:layout_marginEnd="5dp"
                 android:singleLine="true" />
 
-            <!-- RadioButton for "Weekly" -->
+            <!-- RadioButton for "Daily" -->
             <RadioButton
-                android:id="@+id/weekly"
-                android:text="Weekly"
+                android:id="@+id/daily"
+                android:text="Daily"
                 android:buttonTint="@color/radio_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:singleLine="true" />
 
-            <!-- RadioButton for "Bi-Weekly" -->
+            <!-- RadioButton for "Weekly" -->
             <RadioButton
-                android:id="@+id/biWeekly"
-                android:text="Bi-Weekly"
+                android:id="@+id/weekly"
+                android:text="Weekly"
                 android:buttonTint="@color/radio_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
