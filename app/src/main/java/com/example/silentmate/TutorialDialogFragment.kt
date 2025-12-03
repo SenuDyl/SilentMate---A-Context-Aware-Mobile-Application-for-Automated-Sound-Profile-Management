@@ -19,6 +19,7 @@ class TutorialDialogFragment : DialogFragment() {
     private lateinit var dontShowAgainCheckBox: CheckBox
     private lateinit var prevButton: Button
     private lateinit var nextButton: Button
+    private var isFromSettings: Boolean = false
 
     private var currentStepIndex = 0
 
@@ -26,7 +27,8 @@ class TutorialDialogFragment : DialogFragment() {
         TutorialStep(
             title = "Welcome to SilentMate",
             content = "1. This area shows that no schedules have been created yet.\n\n" +
-                    "2. Use this button to create a new schedule.",
+                    "2. Use this button to create a new schedule.\n\n" +
+                    "2. Use settings button to grant necessary permissions.",
             imageResId = R.drawable.background_image
         ),
         TutorialStep(
@@ -49,6 +51,9 @@ class TutorialDialogFragment : DialogFragment() {
     ): View {
         val view = inflater.inflate(R.layout.dialog_tutorial, container, false)
 
+        // Get the arguments passed from the parent fragment
+        isFromSettings = arguments?.getBoolean("isFromSettings", false) ?: false
+
         tutorialTitle = view.findViewById(R.id.tutorialTitle)
         tutorialContent = view.findViewById(R.id.tutorialContent)
         tutorialImage = view.findViewById(R.id.tutorialImage)
@@ -58,6 +63,10 @@ class TutorialDialogFragment : DialogFragment() {
 
         prevButton.setOnClickListener { showPreviousStep() }
         nextButton.setOnClickListener { showNextStep() }
+        // Conditionally hide the "Do not show again" checkbox if it's from Settings
+        if (isFromSettings) {
+            dontShowAgainCheckBox.visibility = View.GONE // Hide the checkbox when showing from Settings
+        }
 
         updateStep() // show first step
 

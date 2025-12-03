@@ -1,6 +1,7 @@
 package com.example.silentmate
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
@@ -62,6 +64,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
 
@@ -92,6 +95,12 @@ class SettingsFragment : Fragment() {
 
         // Set up switch listeners
         setupSwitchListeners()
+
+        // Set up the User Guide TextView click listener
+        val userGuideTextView: TextView = view.findViewById(R.id.userGuideText)
+        userGuideTextView.setOnClickListener {
+            onUserGuideClicked(it)
+        }
 
         return view
     }
@@ -316,6 +325,19 @@ class SettingsFragment : Fragment() {
             sharedPreferences.edit().putBoolean("dnd_override", true).apply()
             Toast.makeText(requireContext(), "DND Override enabled", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun onUserGuideClicked(view: View) {
+        // Create a new instance of the TutorialDialogFragment
+        val tutorialDialog = TutorialDialogFragment()
+
+        // Pass a flag to indicate this was launched from the settings
+        val bundle = Bundle()
+        bundle.putBoolean("isFromSettings", true) // Flag to indicate it's from Settings
+
+        tutorialDialog.arguments = bundle
+        tutorialDialog.isCancelable = false // Prevent dismissing by clicking outside
+        tutorialDialog.show(parentFragmentManager, "tutorial_dialog")
     }
 
     override fun onResume() {
