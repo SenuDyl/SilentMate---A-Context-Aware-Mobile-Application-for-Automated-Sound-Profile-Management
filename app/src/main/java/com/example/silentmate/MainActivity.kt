@@ -2,9 +2,12 @@ package com.example.silentmate
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.silentmate.databinding.ActivityMainBinding
 import androidx.lifecycle.lifecycleScope
@@ -42,6 +45,9 @@ class MainActivity : BaseActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set status bar color for entire app
+        setupStatusBarColor()
 
         // Check if a specific tab was requested
         val selectedTab = intent.getStringExtra("selected_tab")
@@ -81,6 +87,27 @@ class MainActivity : BaseActivity() {
 
         // Show tutorial only on first launch (not on theme changes)
         showTutorialIfNeeded()
+    }
+
+    private fun setupStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Set status bar color to match app header (darkPurple #46467A)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.darkPurple)
+
+            // Set light status bar icons (white icons for dark purple background)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // Clear the light status bar flag to show white icons
+                var flags = window.decorView.systemUiVisibility
+                flags = flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+                window.decorView.systemUiVisibility = flags
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reapply status bar color when activity resumes
+        setupStatusBarColor()
     }
 
     private fun showTutorialIfNeeded() {
