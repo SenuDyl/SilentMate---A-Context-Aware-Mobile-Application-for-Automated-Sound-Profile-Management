@@ -55,7 +55,7 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var recurrenceGroup: GridLayout
     private lateinit var oneTimeButton: RadioButton
     private lateinit var weeklyButton: RadioButton
-    private lateinit var biWeeklyButton: RadioButton
+    private lateinit var dailyButton: RadioButton
     private lateinit var monthlyButton: RadioButton
     private lateinit var doneButton: ImageView
     private lateinit var cancelButton: ImageView
@@ -111,40 +111,6 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
                 Log.e("PlaceError", "Error: $status")
             }
         })
-        
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        
-        bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    // Navigate back to MainActivity
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.nav_sensor -> {
-                    // Navigate to MainActivity and set sensor tab
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("selected_tab", "sensor")
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                R.id.nav_settings -> {
-                    // Navigate to MainActivity and set settings tab
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("selected_tab", "settings")
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                    finish()
-                    true
-                }
-                else -> false
-            }
-        }
 
         dbHelper = EventDatabaseHelper(this)
         geofencingClient = LocationServices.getGeofencingClient(this)
@@ -245,7 +211,7 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
         // Find the individual RadioButton views by their ID
         oneTimeButton = findViewById(R.id.oneTime)
         weeklyButton = findViewById(R.id.weekly)
-        biWeeklyButton = findViewById(R.id.biWeekly)
+        dailyButton = findViewById(R.id.daily)
         monthlyButton = findViewById(R.id.monthly)
 
         // Set the listener for each RadioButton
@@ -257,8 +223,8 @@ class AddEventActivity : AppCompatActivity(), OnMapReadyCallback {
             recurrence = Recurrence.WEEKLY
         }
 
-        biWeeklyButton.setOnClickListener {
-            recurrence = Recurrence.BIWEEKLY
+        dailyButton.setOnClickListener {
+            recurrence = Recurrence.DAILY
         }
 
         monthlyButton.setOnClickListener {

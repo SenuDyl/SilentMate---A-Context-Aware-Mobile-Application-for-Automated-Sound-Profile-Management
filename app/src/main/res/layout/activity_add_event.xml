@@ -33,7 +33,6 @@
                 android:id="@+id/createEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
                 android:text="Create Event"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -72,14 +71,13 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="56dp">
+        android:layout_marginBottom="0dp">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            style="@style/AppFontStyle">
+            android:background="@color/white">
 
             <include
                 layout="@layout/layout_add_event_content"
@@ -87,17 +85,5 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
-
-    <!-- Fixed Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        android:background="@color/darkPurple"
-        app:itemIconTint="@color/white"
-        app:labelVisibilityMode="unlabeled"
-        app:itemIconSize="32dp"
-        app:menu="@menu/bottom_menu"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
