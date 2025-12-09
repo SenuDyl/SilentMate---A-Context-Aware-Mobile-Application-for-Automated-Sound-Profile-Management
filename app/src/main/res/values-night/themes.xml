@@ -1,7 +1,34 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.SilentMate" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File: res/values-night/themes.xml -->
+<resources>
+    <!-- Dark Mode Theme -->
+    <style name="Base.Theme.SilentMate" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand color - Lighter purple for dark mode -->
+        <item name="colorPrimary">#9E8FD9</item>
+        <item name="colorPrimaryVariant">@color/purple</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color - Lighter pink for dark mode -->
+        <item name="colorSecondary">#FFC4D6</item>
+        <item name="colorSecondaryVariant">@color/pink</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Background colors for dark mode -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+
+
+        <item name="colorOnSurfaceVariant">@color/text_secondary_dark</item>
+
+        <!-- Status bar for dark mode -->
+        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/surface_dark</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
+
+    <style name="Theme.SilentMate" parent="Base.Theme.SilentMate" />
 </resources>

@@ -4,36 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Fixed Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <!-- Toolbar inside AppBarLayout -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/darkPurple"
-        app:titleTextColor="@color/white">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <RelativeLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/darkPurple"
+            app:titleTextColor="@color/white">
 
-            <!-- Back icon -->
-            <ImageView
-                android:id="@+id/backIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_arrow_back_24"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                app:tint="@color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/backIcon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/baseline_arrow_back_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    app:tint="@color/white" />
 
             <!-- Title -->
             <TextView
                 android:id="@+id/createEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans"
                 android:text="Create Event"
                 android:textColor="@color/white"
                 android:textSize="24sp"
@@ -42,29 +45,28 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"/>
 
-            <!-- Done and Close icons -->
-            <ImageView
-                android:id="@+id/closeIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_close_24"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                app:tint="@color/white" />
+                <ImageView
+                    android:id="@+id/closeIcon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/baseline_close_24"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="16dp"
+                    app:tint="@color/white" />
 
-            <ImageView
-                android:id="@+id/doneIcon"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/baseline_done_24"
-                android:layout_toStartOf="@id/closeIcon"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
-                app:tint="@color/white" />
-
-        </RelativeLayout>
-    </androidx.appcompat.widget.Toolbar>
+                <ImageView
+                    android:id="@+id/doneIcon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/baseline_done_24"
+                    android:layout_toStartOf="@id/closeIcon"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/white" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Scrollable content below Toolbar -->
     <ScrollView
@@ -72,31 +74,18 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="56dp">
+        android:layout_marginBottom="0dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            style="@style/AppFontStyle">
+            android:background="@color/white">
 
             <include
-                layout="@layout/layout_add_event_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                layout="@layout/layout_add_event_content"/>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Fixed Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        android:background="@color/darkPurple"
-        app:itemIconTint="@color/white"
-        app:labelVisibilityMode="unlabeled"
-        app:itemIconSize="32dp"
-        app:menu="@menu/bottom_menu"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

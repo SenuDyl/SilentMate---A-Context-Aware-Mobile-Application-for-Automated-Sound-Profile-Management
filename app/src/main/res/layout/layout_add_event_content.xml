@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?attr/colorSurface">
 
     <!-- Event Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Title"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp" />
@@ -45,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="Start Time"
                 android:textSize="14dp"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
             <EditText
@@ -55,6 +56,7 @@
                 android:hint="8.15 a.m."
                 android:background="@drawable/edittext_bg"
                 android:padding="10dp"
+                android:layout_marginTop="4dp"
                 android:focusable="false"/>
         </LinearLayout>
 
@@ -73,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:text="End Time"
                 android:textSize="14dp"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"/>
 
             <EditText
@@ -83,125 +85,48 @@
                 android:hint="10.15 a.m."
                 android:background="@drawable/edittext_bg"
                 android:padding="10dp"
+                android:layout_marginTop="4dp"
                 android:focusable="false"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Date Buttons -->
+    <!-- Start Date -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date"
+        android:text="Start Date"
         android:textStyle="bold"
         android:textSize="14dp"
-        android:textColor="@color/black"
-        android:layout_marginTop="12dp" />
-
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginTop="12dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        >
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/edittext_bg">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/monButton"
+        <TextView
+            android:id="@+id/startDateText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Mon"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
+            android:text="Select a date"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
+            />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/tueButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tue"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/wedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Wed"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/thuButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Thu"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/friButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Fri"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/satButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sat"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sunButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sun"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:checkable="true"
-            app:cornerRadius="12dp"
-            android:layout_marginEnd="2dp"
-            app:backgroundTint="@color/day_button_color"/>
+        <ImageView
+            android:id="@+id/startDateIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/baseline_calendar_month_24"
+            app:tint="?attr/colorOnSurface" />
     </LinearLayout>
 
-    </HorizontalScrollView>
 
     <!-- Recurrence -->
     <TextView
@@ -210,25 +135,70 @@
         android:text="Recurrence"
         android:textStyle="bold"
         android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp" />
 
-    <RadioGroup
+    <GridLayout
         android:id="@+id/recurrenceGroup"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:rowCount="2">
 
-        <RadioButton android:id="@+id/oneTime" android:text="One-time" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <RadioButton android:id="@+id/weekly" android:text="Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-        <RadioButton android:id="@+id/biWeekly" android:text="Bi-Weekly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+        <!-- RadioGroup to group all radio buttons together (mutually exclusive) -->
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/monthly"
-            android:text="Monthly" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-    </RadioGroup>
+            <!-- RadioButton for "One-time" -->
+            <RadioButton
+                android:id="@+id/oneTime"
+                android:text="Once"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Daily" -->
+            <RadioButton
+                android:id="@+id/daily"
+                android:text="Daily"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Weekly" -->
+            <RadioButton
+                android:id="@+id/weekly"
+                android:text="Weekly"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:singleLine="true" />
+
+            <!-- RadioButton for "Monthly" -->
+            <RadioButton
+                android:id="@+id/monthly"
+                android:text="Monthly"
+                android:buttonTint="@color/radio_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:singleLine="true" />
+        </RadioGroup>
+
+    </GridLayout>
 
     <!-- Location -->
     <TextView
@@ -237,26 +207,21 @@
         android:text="Location"
         android:textStyle="bold"
         android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
-    <EditText
-        android:id="@+id/location"
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter location"
-        android:background="@drawable/edittext_bg"
-        android:padding="10dp"/>
+        android:textColor="?attr/colorOnSurface"
+        android:layout_height="wrap_content" />
 
-    <!-- MapView Placeholder -->
-    <ImageView
-        android:id="@+id/mapImage"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/sample_map"
-        android:scaleType="centerCrop"
-        android:background="@drawable/edittext_bg"/>
+        android:layout_marginTop="8dp" />
 
     <!-- Action Section -->
     <TextView
@@ -265,7 +230,7 @@
         android:text="Action"
         android:textStyle="bold"
         android:textSize="14dp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="12dp"/>
 
     <LinearLayout
@@ -277,28 +242,28 @@
 
         <ImageButton
             android:id="@+id/soundOff"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_volume_up_24"
-            android:background="@null"
-            app:tint="@color/purple"
-            android:layout_marginEnd="90dp"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/vibrate"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_vibration_24"
-            android:background="@null"
-            app:tint="@color/purple"
-            android:layout_marginEnd="90dp"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"
+            android:layout_marginEnd="20dp"/>
 
         <ImageButton
             android:id="@+id/soundOn"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_volume_off_24"
-            android:background="@null"
-            app:tint="@color/purple"/>
+            android:background="@drawable/rounded_button"
+            app:tint="@color/white"/>
     </LinearLayout>
 </LinearLayout>
