@@ -64,7 +64,7 @@ Seamlessly adapts to your system theme preferences for a comfortable viewing exp
 ### Installation
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/yourusername/silentmate.git](https://github.com/yourusername/silentmate.git)
+    git clone https://github.com/yourusername/silentmate.git
     ```
 2.  Open the project in **Android Studio**.
 3.  Build and Run on your device or emulator.
