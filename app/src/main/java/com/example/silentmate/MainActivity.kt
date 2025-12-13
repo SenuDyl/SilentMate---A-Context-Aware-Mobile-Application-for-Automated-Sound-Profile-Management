@@ -13,6 +13,7 @@ import com.example.silentmate.databinding.ActivityMainBinding
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import android.view.WindowInsetsController
 
 class MainActivity : BaseActivity() {
 
@@ -48,6 +49,7 @@ class MainActivity : BaseActivity() {
 
         // Set status bar color for entire app
         setupStatusBarColor()
+        setupNavigationBar()
 
         // Check if a specific tab was requested
         val selectedTab = intent.getStringExtra("selected_tab")
@@ -101,6 +103,26 @@ class MainActivity : BaseActivity() {
                 flags = flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
                 window.decorView.systemUiVisibility = flags
             }
+        }
+    }
+
+    private fun setupNavigationBar() {
+        // Set navigation bar color to white
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.darkPurple)
+
+        // Make navigation bar icons dark (for light background)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11 and above
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Android 8.0 and above
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility =
+                window.decorView.systemUiVisibility or
+                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         }
     }
 
