@@ -28,12 +28,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Locale
+import java.util.*
 
 class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -272,10 +275,16 @@ class EditEventActivity : AppCompatActivity(), OnMapReadyCallback {
         val event = dbHelper.getAllEvents().find { it.id == eventId }
         if (event != null) {
             titleEditText.setText(event.title)
+
             startTime = event.startTime
             endTime = event.endTime
-            startTimeEditText.setText(event.startTime.toString())
-            endTimeEditText.setText(event.endTime.toString())
+
+            val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
+
+            // Formatting the time
+            startTimeEditText.setText(event.startTime.format(timeFormatter))
+            endTimeEditText.setText(event.endTime.format(timeFormatter))
+
             selectedDate = event.date
             startDateText.text = event.date.toString()
             recurrence = event.recurrence

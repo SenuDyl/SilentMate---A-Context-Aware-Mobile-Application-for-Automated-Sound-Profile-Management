@@ -3,14 +3,14 @@
     android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_background">
+    android:background="?attr/android:colorBackground">
 
     <TextView
         android:id="@+id/tutorialTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tutorial"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_gravity="center"
@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tutorial content goes here"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginTop="16dp"/>
 
     <CheckBox

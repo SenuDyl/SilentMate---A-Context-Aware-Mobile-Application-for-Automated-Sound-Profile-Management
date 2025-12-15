@@ -34,7 +34,7 @@ class SettingsFragment : Fragment() {
     private lateinit var notificationsSwitch: SwitchCompat
     private lateinit var locationSwitch: SwitchCompat
     private lateinit var dndOverrideSwitch: SwitchCompat
-    private lateinit var sensorAccessSwitch: SwitchCompat
+//    private lateinit var sensorAccessSwitch: SwitchCompat
     private lateinit var performanceModeSwitch: SwitchCompat
     private lateinit var darkModeSwitch: SwitchCompat
     private lateinit var eventAudioSwitch: SwitchCompat
@@ -81,7 +81,7 @@ class SettingsFragment : Fragment() {
         notificationsSwitch = view.findViewById(R.id.notificationsSwitch)
         locationSwitch = view.findViewById(R.id.locationSwitch)
         dndOverrideSwitch = view.findViewById(R.id.dndOverrideSwitch)
-        sensorAccessSwitch = view.findViewById(R.id.sensorAccessSwitch)
+//        sensorAccessSwitch = view.findViewById(R.id.sensorAccessSwitch)
         performanceModeSwitch = view.findViewById(R.id.performanceModeSwitch)
         darkModeSwitch = view.findViewById(R.id.darkModeSwitch)
         eventAudioSwitch = view.findViewById(R.id.eventAudioSwitch)
@@ -138,7 +138,7 @@ class SettingsFragment : Fragment() {
         applySwitchColorStateList(notificationsSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(locationSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(dndOverrideSwitch, thumbColorStateList, trackColorStateList)
-        applySwitchColorStateList(sensorAccessSwitch, thumbColorStateList, trackColorStateList)
+//        applySwitchColorStateList(sensorAccessSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(performanceModeSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(darkModeSwitch, thumbColorStateList, trackColorStateList)
         applySwitchColorStateList(eventAudioSwitch, thumbColorStateList, trackColorStateList)
@@ -198,7 +198,7 @@ class SettingsFragment : Fragment() {
         dndOverrideSwitch.isChecked = hasDndAccess
 
         // Sensor access (always available as system sensors)
-        sensorAccessSwitch.isChecked = true
+//        sensorAccessSwitch.isChecked = true
 
         // Performance mode from preferences
         performanceModeSwitch.isChecked = sharedPreferences.getBoolean("performance_mode", false)
@@ -249,18 +249,18 @@ class SettingsFragment : Fragment() {
 //                    Toast.LENGTH_LONG).show()
             }
         }
-
-        sensorAccessSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
-
-            sharedPreferences.edit().putBoolean("sensor_access", isChecked).apply()
-
-//            if (isChecked) {
-//                Toast.makeText(requireContext(), "Sensor access enabled", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(requireContext(), "Sensor access disabled", Toast.LENGTH_SHORT).show()
-//            }
-        }
+//
+//        sensorAccessSwitch.setOnCheckedChangeListener { _, isChecked ->
+//            if (isUpdatingProgrammatically) return@setOnCheckedChangeListener
+//
+//            sharedPreferences.edit().putBoolean("sensor_access", isChecked).apply()
+//
+////            if (isChecked) {
+////                Toast.makeText(requireContext(), "Sensor access enabled", Toast.LENGTH_SHORT).show()
+////            } else {
+////                Toast.makeText(requireContext(), "Sensor access disabled", Toast.LENGTH_SHORT).show()
+////            }
+//        }
 
         performanceModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isUpdatingProgrammatically) return@setOnCheckedChangeListener

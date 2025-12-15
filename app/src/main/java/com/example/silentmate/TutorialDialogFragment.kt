@@ -1,6 +1,7 @@
 package com.example.silentmate
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,13 @@ class TutorialDialogFragment : DialogFragment() {
     private lateinit var nextButton: Button
     private var isFromSettings: Boolean = false
 
+    private var listener: OnTutorialDismissListener? = null
+
+    // Define the callback interface
+    interface OnTutorialDismissListener {
+        fun onTutorialDismissed()
+    }
+
     private var currentStepIndex = 0
 
     private val steps = listOf(
@@ -28,19 +36,19 @@ class TutorialDialogFragment : DialogFragment() {
             title = "Welcome to SilentMate",
             content = "1. This area shows that no schedules have been created yet.\n\n" +
                     "2. Use this button to create a new schedule.\n\n" +
-                    "2. Use settings button to grant necessary permissions.",
-            imageResId = R.drawable.background_image
+                    "3. Use settings button to grant necessary permissions.",
+            imageResId = R.drawable.Tutorial1
         ),
         TutorialStep(
             title = "Creating a New Event",
             content = "1. Fill in event name, date, start/end time, location, and action (choose which audio profile to switch to during the event). \n\n" +
                     "2. Tap this to store the event. It will now appear in the Home screen event list.",
-            imageResId = R.drawable.background_image
+            imageResId = R.drawable.Tutorial2
         ),
         TutorialStep(
             title = "Sensor-based Audio Profile Switching",
             content = "SilentMate can automatically switch your phone’s audio profile based on your device position. Users can enable or disable each option.",
-            imageResId = R.drawable.background_image
+            imageResId = R.drawable.Tutorial3
         )
     )
 
@@ -114,5 +122,24 @@ class TutorialDialogFragment : DialogFragment() {
             (resources.displayMetrics.widthPixels * 0.95).toInt(),
             (resources.displayMetrics.heightPixels * 0.95).toInt()
         )
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Check if the parent activity implements the listener
+        if (context is OnTutorialDismissListener) {
+            listener = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        // Notify the listener when the dialog is dismissed
+        listener?.onTutorialDismissed()
     }
 }
