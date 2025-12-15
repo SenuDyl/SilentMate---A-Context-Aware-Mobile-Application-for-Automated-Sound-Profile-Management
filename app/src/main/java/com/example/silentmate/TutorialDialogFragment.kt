@@ -37,18 +37,18 @@ class TutorialDialogFragment : DialogFragment() {
             content = "1. This area shows that no schedules have been created yet.\n\n" +
                     "2. Use this button to create a new schedule.\n\n" +
                     "3. Use settings button to grant necessary permissions.",
-            imageResId = R.drawable.Tutorial1
+            imageResId = R.drawable.tutorial1
         ),
         TutorialStep(
             title = "Creating a New Event",
             content = "1. Fill in event name, date, start/end time, location, and action (choose which audio profile to switch to during the event). \n\n" +
                     "2. Tap this to store the event. It will now appear in the Home screen event list.",
-            imageResId = R.drawable.Tutorial2
+            imageResId = R.drawable.tutorial2
         ),
         TutorialStep(
             title = "Sensor-based Audio Profile Switching",
             content = "SilentMate can automatically switch your phone’s audio profile based on your device position. Users can enable or disable each option.",
-            imageResId = R.drawable.Tutorial3
+            imageResId = R.drawable.tutorial3
         )
     )
 
